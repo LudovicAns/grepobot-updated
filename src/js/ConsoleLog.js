@@ -4,14 +4,14 @@
  */
 ConsoleLog = {
   Logs: [],
-  Types: ["Autobot", "Farming", "Culture", "Builder", "Attack "],
+  Types: ["GrepoBot Updated", "Farming", "Culture", "Builder", "Attack "],
   scrollInterval: "",
   scrollUpdate: true,
   contentConsole: function () {
     var consoleFieldset = $("<fieldset/>", {
       style: "float:left; width:472px;",
     })
-      ["append"]($("<legend/>")["html"]("Autobot Console"))
+      ["append"]($("<legend/>")["html"]("GrepoBot Updated Console"))
       ["append"](
         $("<div/>", {
           class: "terminal",

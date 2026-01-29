@@ -3,8 +3,8 @@
  * Responsibilities: load modules, wire AJAX hooks, and render the bot UI.
  */
 var Autobot = {
-  title: "Autobot",
-  version: "v0.55",
+  title: "GrepoBot Updated",
+  version: "0.1.0",
   domain:
     window.location.protocol +
     "//cdn.jsdelivr.net/gh/alexandre2017009p-star/bot7u10@5.99/",
@@ -19,7 +19,7 @@ var Autobot = {
     csrfToken: Game.csrfToken,
   },
   init: function () {
-    ConsoleLog.Log("Initialize Autobot", 0);
+    ConsoleLog.Log("Initialize GrepoBot Updated", 0);
     Autobot.loadModules();
     Autobot.initAjax();
     Autobot.initMapTownFeature();
@@ -263,7 +263,7 @@ var Autobot = {
       $("#notification_area>.notification")["length"] + 1,
       type,
       "<span><b>" +
-        "Autobot" +
+        "GrepoBot Updated" +
         "</b></span>" +
         message +
         "<span class='small notification_date'>" +

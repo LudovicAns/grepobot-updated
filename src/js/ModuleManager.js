@@ -206,7 +206,7 @@ ModuleManager = {
     ModuleManager.start();
   },
   /**
-   * Put the "Start Autobot" text into the timer window
+   * Put the "Start GrepoBot Updated" text into the timer window
    */
   initTimer: function () {
     $(".nui_main_menu").css("top", "276px");
@@ -215,7 +215,7 @@ ModuleManager = {
         FormBuilder.timerBoxSmall({
           id: "Autofarm_timer",
           styles: "",
-          text: "Start Autobot",
+          text: "Start GrepoBot Updated",
         }),
       )
       .show();

@@ -72,10 +72,10 @@ def main() -> None:
 
     userscript = []
     userscript.append("// ==UserScript==")
-    userscript.append("// @name         Grepolis Autobot (bot7u10 local)")
+    userscript.append("// @name         GrepoBot Updated")
     userscript.append("// @namespace    local.grepobot")
-    userscript.append("// @version      0.55-local")
-    userscript.append("// @description  Local bundle for bot7u10 Autobot")
+    userscript.append("// @version      0.1.0")
+    userscript.append("// @description  Local bundle for GrepoBot Updated")
     userscript.append("// @match        https://*.grepolis.com/game/*")
     userscript.append("// @exclude      https://classic.grepolis.com/game/*")
     userscript.append("// @grant        none")
