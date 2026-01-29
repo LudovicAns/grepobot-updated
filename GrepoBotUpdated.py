@@ -6,14 +6,14 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 SRC = ROOT / "src"
-OUT = ROOT / "bot7u10-local.user.js"
+OUT = ROOT / "GrepoBotUpdated.user.js"
 
 JS_DIR = SRC / "js"
-CSS_FILE = SRC / "styles" / "Autobot.css"
+CSS_FILE = SRC / "styles" / "GrepoBotUpdated.css"
 IMAGES_DIR = SRC / "assets" / "images"
 
 JS_FILES = [
-    "Autobot.js",
+    "GrepoBotUpdated.js",
     "ConsoleLog.js",
     "DataExchanger.js",
     "FormBuilder.js",
@@ -197,7 +197,7 @@ def main() -> None:
     userscript.append("    window.__grepobot_local_loaded = true;")
     userscript.append("    grepobotInstallAjaxHook();")
     userscript.append("    grepobotInjectCss();")
-    userscript.append("    grepobotRunScript(\"Autobot.js\");")
+    userscript.append("    grepobotRunScript(\"GrepoBotUpdated.js\");")
     userscript.append("  }, 250);")
     userscript.append("}")
     userscript.append("")

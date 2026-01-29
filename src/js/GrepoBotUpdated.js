@@ -2,7 +2,7 @@
  * Main bootstrap module for the bot.
  * Responsibilities: load modules, wire AJAX hooks, and render the bot UI.
  */
-var Autobot = {
+var GrepoBotUpdated = {
   title: "GrepoBot Updated",
   version: "0.1.0",
   domain:
@@ -20,10 +20,10 @@ var Autobot = {
   },
   init: function () {
     ConsoleLog.Log("Initialize GrepoBot Updated", 0);
-    Autobot.loadModules();
-    Autobot.initAjax();
-    Autobot.initMapTownFeature();
-    Autobot.fixMessage();
+    GrepoBotUpdated.loadModules();
+    GrepoBotUpdated.initAjax();
+    GrepoBotUpdated.initMapTownFeature();
+    GrepoBotUpdated.fixMessage();
     Assistant.init();
   },
   /**
@@ -36,28 +36,28 @@ var Autobot = {
    * Initialize bot window
    */
   initWnd: function () {
-    if (!Autobot["isLogged"]) {
+    if (!GrepoBotUpdated["isLogged"]) {
       return;
     }
     //if window is already initialized
-    if (typeof Autobot.botWnd != "undefined") {
+    if (typeof GrepoBotUpdated.botWnd != "undefined") {
       try {
-        Autobot["botWnd"]["close"]();
+        GrepoBotUpdated["botWnd"]["close"]();
       } catch (F) {}
-      Autobot["botWnd"] = undefined;
+      GrepoBotUpdated["botWnd"] = undefined;
     }
 
-    Autobot.botWnd = Layout.dialogWindow.open(
+    GrepoBotUpdated.botWnd = Layout.dialogWindow.open(
       "",
-      Autobot.title + " " + Autobot.version,
+      GrepoBotUpdated.title + " " + GrepoBotUpdated.version,
       500,
       350,
       "",
       false,
     );
-    Autobot.botWnd.setHeight([350]);
-    Autobot.botWnd.setPosition(["center", "center"]);
-    var botWindow = Autobot.botWnd.getJQElement();
+    GrepoBotUpdated.botWnd.setHeight([350]);
+    GrepoBotUpdated.botWnd.setPosition(["center", "center"]);
+    var botWindow = GrepoBotUpdated.botWnd.getJQElement();
     botWindow["append"](
       $("<div/>", {
         "\x63\x6C\x61\x73\x73": "menu_wrapper",
@@ -66,53 +66,53 @@ var Autobot = {
         $("<ul/>", {
           "\x63\x6C\x61\x73\x73": "menu_inner",
         })
-          ["prepend"](Autobot["addMenuItem"]("AUTHORIZE", "Account", "Account"))
+          ["prepend"](GrepoBotUpdated["addMenuItem"]("AUTHORIZE", "Account", "Account"))
           ["prepend"](
-            Autobot["addMenuItem"]("CONSOLE", "Assistant", "Assistant"),
+            GrepoBotUpdated["addMenuItem"]("CONSOLE", "Assistant", "Assistant"),
           )
           ["prepend"](
-            Autobot["addMenuItem"]("ASSISTANT", "Console", "Console"),
-          ) /*['prepend'](Autobot['addMenuItem']('SUPPORT', 'Support', 'Support'))*/,
+            GrepoBotUpdated["addMenuItem"]("ASSISTANT", "Console", "Console"),
+          ) /*['prepend'](GrepoBotUpdated['addMenuItem']('SUPPORT', 'Support', 'Support'))*/,
       ),
     );
     if (typeof Autoattack !== "undefined") {
       botWindow["find"](".menu_inner li:last-child")["before"](
-        Autobot["addMenuItem"]("ATTACKMODULE", "Attack", "Autoattack"),
+        GrepoBotUpdated["addMenuItem"]("ATTACKMODULE", "Attack", "Autoattack"),
       );
     }
     if (typeof Autobuild !== "undefined") {
       botWindow["find"](".menu_inner li:last-child")["before"](
-        Autobot["addMenuItem"]("CONSTRUCTMODULE", "Build", "Autobuild"),
+        GrepoBotUpdated["addMenuItem"]("CONSTRUCTMODULE", "Build", "Autobuild"),
       );
     }
     if (typeof Autoculture !== "undefined") {
       botWindow["find"](".menu_inner li:last-child")["before"](
-        Autobot["addMenuItem"]("CULTUREMODULE", "Culture", "Autoculture"),
+        GrepoBotUpdated["addMenuItem"]("CULTUREMODULE", "Culture", "Autoculture"),
       );
     }
     if (typeof Autofarm !== "undefined") {
       botWindow["find"](".menu_inner li:last-child")["before"](
-        Autobot["addMenuItem"]("FARMMODULE", "Farm", "Autofarm"),
+        GrepoBotUpdated["addMenuItem"]("FARMMODULE", "Farm", "Autofarm"),
       );
     }
-    $("#Autobot-AUTHORIZE")["click"]();
+    $("#GrepoBotUpdated-AUTHORIZE")["click"]();
   },
   addMenuItem: function (menuId, label, relKey) {
     return $("<li/>")["append"](
       $("<a/>", {
         "\x63\x6C\x61\x73\x73": "submenu_link",
         "\x68\x72\x65\x66": "#",
-        "\x69\x64": "Autobot-" + menuId,
+        "\x69\x64": "GrepoBotUpdated-" + menuId,
         "\x72\x65\x6C": relKey,
       })
         ["click"](function () {
-          Autobot["botWnd"]
+          GrepoBotUpdated["botWnd"]
             ["getJQElement"]()
             ["find"]("li a.submenu_link")
             ["removeClass"]("active");
           $(this)["addClass"]("active");
-          Autobot["botWnd"]["setContent2"](
-            Autobot["getContent"]($(this)["attr"]("rel")),
+          GrepoBotUpdated["botWnd"]["setContent2"](
+            GrepoBotUpdated["getContent"]($(this)["attr"]("rel")),
           );
           if ($(this)["attr"]("rel") == "Console") {
             var terminal = $(".terminal");
@@ -142,10 +142,10 @@ var Autobot = {
       return ConsoleLog["contentConsole"]();
     } else {
       if (tabKey == "Account") {
-        return Autobot["contentAccount"]();
+        return GrepoBotUpdated["contentAccount"]();
       } else {
         /*if (tabKey == 'Support') {
-                    return Autobot['contentSupport']()
+                    return GrepoBotUpdated['contentSupport']()
                 } else {*/
         if (typeof window[tabKey] != "undefined") {
           return window[tabKey]["contentSettings"]();
@@ -213,7 +213,7 @@ var Autobot = {
   initAjax: function () {
     $(document).ajaxComplete(function (_event, _xhr, _settings) {
       if (
-        _settings.url.indexOf(Autobot.domain) == -1 &&
+        _settings.url.indexOf(GrepoBotUpdated.domain) == -1 &&
         _settings.url.indexOf("/game/") != -1 &&
         _xhr.readyState == 4 &&
         _xhr.status == 200
@@ -268,7 +268,7 @@ var Autobot = {
         message +
         "<span class='small notification_date'>" +
         "Version " +
-        Autobot["version"] +
+        GrepoBotUpdated["version"] +
         "</span>",
     );
   },
@@ -401,8 +401,8 @@ var Autobot = {
                   class: "botsettings circle_button_settings",
                 })
                   ["on"]("click", function () {
-                    if (Autobot["isLogged"]) {
-                      Autobot["initWnd"]();
+                    if (GrepoBotUpdated["isLogged"]) {
+                      GrepoBotUpdated["initWnd"]();
                     }
                   })
                   ["mousePopup"](
@@ -431,7 +431,7 @@ var Autobot = {
     var wrapCreateTownDiv = function (originalCreateTownDiv) {
       return function () {
         var townDivs = originalCreateTownDiv["apply"](this, arguments);
-        return Autobot["town_map_info"](townDivs, arguments[0]);
+        return GrepoBotUpdated["town_map_info"](townDivs, arguments[0]);
       };
     };
     MapTiles["createTownDiv"] = wrapCreateTownDiv(MapTiles["createTownDiv"]);
@@ -488,20 +488,20 @@ var Autobot = {
         !$["isEmptyObject"](ITowns["towns"])
       ) {
         clearInterval(pollInterval);
-        Autobot["initWindow"]();
-        Autobot["initMapTownFeature"]();
+        GrepoBotUpdated["initWindow"]();
+        GrepoBotUpdated["initMapTownFeature"]();
 
         $["when"](
-          $["getScript"](Autobot["domain"] + "DataExchanger.js"),
-          $["getScript"](Autobot["domain"] + "ConsoleLog.js"),
-          $["getScript"](Autobot["domain"] + "FormBuilder.js"),
-          $["getScript"](Autobot["domain"] + "ModuleManager.js"),
-          $["getScript"](Autobot["domain"] + "Assistant.js"),
+          $["getScript"](GrepoBotUpdated["domain"] + "DataExchanger.js"),
+          $["getScript"](GrepoBotUpdated["domain"] + "ConsoleLog.js"),
+          $["getScript"](GrepoBotUpdated["domain"] + "FormBuilder.js"),
+          $["getScript"](GrepoBotUpdated["domain"] + "ModuleManager.js"),
+          $["getScript"](GrepoBotUpdated["domain"] + "Assistant.js"),
           $.Deferred(function (deferred) {
             $(deferred["resolve"]);
           }),
         )["done"](function () {
-          Autobot["init"]();
+          GrepoBotUpdated["init"]();
         });
       } else {
         if (
@@ -509,13 +509,13 @@ var Autobot = {
         ) {
           clearInterval(pollInterval);
           $["when"](
-            $["getScript"](Autobot["domain"] + "DataExchanger.js"),
-            $["getScript"](Autobot["domain"] + "Redirect.js"),
+            $["getScript"](GrepoBotUpdated["domain"] + "DataExchanger.js"),
+            $["getScript"](GrepoBotUpdated["domain"] + "Redirect.js"),
             $.Deferred(function (deferred) {
               $(deferred["resolve"]);
             }),
           )["done"](function () {
-            Autobot["checkAutoRelogin"]();
+            GrepoBotUpdated["checkAutoRelogin"]();
           });
         }
       }
