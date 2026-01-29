@@ -8,14 +8,14 @@
 #premium-bot {
     float: right;
     text-align: center;
-    background: url(images/premium-btn.png) no-repeat;
+    background: url(../assets/images/premium-btn.png) no-repeat;
     width: 128px;
     height: 24px;
     cursor: pointer
 }
 
 #premium-bot:hover {
-    background: url(images/premium-btn.png) 0 -24px no-repeat !important
+    background: url(../assets/images/premium-btn.png) 0 -24px no-repeat !important
 }
 
 #premium-bot .js-caption {
@@ -28,7 +28,7 @@
 }
 
 #grepobanner {
-    background: url(images/grepobanner.png);
+    background: url(../assets/images/grepobanner.png);
     width: 500px;
     height: 94px
 }
@@ -43,7 +43,7 @@
 }
 
 .nui_bot_toolbox .bot_menu {
-    background: url(images/toolbox.png) no-repeat;
+    background: url(../assets/images/toolbox.png) no-repeat;
     width: 145px;
     height: 25px
 }
@@ -62,11 +62,11 @@
 }
 
 .nui_bot_toolbox .bot_menu ul li:hover {
-    background: url(images/iconhover.png) no-repeat
+    background: url(../assets/images/iconhover.png) no-repeat
 }
 
 .nui_bot_toolbox .bot_menu ul li span {
-    background: url(images/items-sprite.png) no-repeat;
+    background: url(../assets/images/items-sprite.png) no-repeat;
     display: block !important;
     cursor: pointer;
     width: 24px !important;
@@ -128,14 +128,14 @@
 
 .nui_bot_toolbox .time_row {
     display: none;
-    background: url(images/toolbox.png) 0 -25px no-repeat;
+    background: url(../assets/images/toolbox.png) 0 -25px no-repeat;
     width: 134px;
     height: 25px;
     padding: 5px 8px 0 2px
 }
 
 #payment #right #information, #payment #right #pothead, #payment #time_options li, #payment #time_options li .referenceAmount {
-    background-image: url(images/sprite.png)
+    background-image: url(../assets/images/sprite.png)
 }
 
 .cmd .prompt {
@@ -622,7 +622,7 @@ a#unit_order_addqueue:hover {
 }
 
 #Support_tab #support_textarea {
-    background: url(images/support_textarea.png);
+    background: url(../assets/images/support_textarea.png);
     width: 212px;
     height: 84px;
     border: none;

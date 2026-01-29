@@ -5,11 +5,12 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parent
-SRC = ROOT / "bot7u10-src"
+SRC = ROOT / "src"
 OUT = ROOT / "bot7u10-local.user.js"
 
-CSS_FILE = SRC / "Autobot.css"
-IMAGES_DIR = SRC / "images"
+JS_DIR = SRC / "js"
+CSS_FILE = SRC / "styles" / "Autobot.css"
+IMAGES_DIR = SRC / "assets" / "images"
 
 JS_FILES = [
     "Autobot.js",
@@ -33,7 +34,12 @@ def b64_encode(data: bytes) -> str:
 def inline_css_images(css_text: str) -> str:
     def repl(match: re.Match) -> str:
         path = match.group(2)
-        if not path.startswith("images/"):
+        normalized = path.lstrip("./")
+        if not (
+            normalized.startswith("images/")
+            or normalized.startswith("assets/images/")
+            or normalized.startswith("../assets/images/")
+        ):
             return match.group(0)
         image_path = IMAGES_DIR / Path(path).name
         if not image_path.exists():
@@ -59,7 +65,7 @@ def main() -> None:
 
     bundle = {}
     for name in JS_FILES:
-        path = SRC / name
+        path = JS_DIR / name
         if not path.exists():
             raise SystemExit(f"Missing JS file: {path}")
         bundle[name] = b64_encode(path.read_bytes())
