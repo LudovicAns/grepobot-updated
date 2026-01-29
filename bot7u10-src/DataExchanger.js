@@ -1,8 +1,13 @@
+/**
+ * DataExchanger module: wraps game AJAX endpoints and normalizes responses.
+ * Responsibilities: call endpoints and handle redirects/notifications.
+ */
 DataExchanger = {
   default_handler: function (callback, useFullResponse) {
     return function (payload, status, xhr) {
       useFullResponse = useFullResponse != undefined;
       var responseJson = payload["json"];
+      // Normalize common response behaviors before invoking callbacks.
       if (responseJson["redirect"]) {
         window["location"]["href"] = responseJson["redirect"];
         delete responseJson["redirect"];

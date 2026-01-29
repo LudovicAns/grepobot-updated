@@ -1,3 +1,7 @@
+/**
+ * Autoattack module: builds a planned attack list and schedules sends.
+ * Flow: start -> checkAttack per item -> send if requirements match.
+ */
 Autoattack = {
   settings: {
     autostart: false,
@@ -23,6 +27,7 @@ Autoattack = {
   },
   start: function () {
     Autoattack["attacks_timers"] = [];
+    // Run checks in parallel and summarize when all are done.
     var attackChecks = $["map"](
       Autoattack["attacks"],
       function (attack, attackIndex) {

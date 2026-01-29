@@ -1,3 +1,7 @@
+/**
+ * Autofarm module: automates farming towns based on resource rules.
+ * Responsibilities: decide when to farm and schedule farming actions.
+ */
 Autofarm = {
   settings: {
     autostart: false,
@@ -16,6 +20,7 @@ Autofarm = {
   hasP: true,
   shouldFarm: [],
   checkReady: function (town) {
+    // Decide if the town should farm based on resources and settings.
     var iTown = ITowns["towns"][town["id"]];
     if (iTown["hasConqueror"]()) {
       return false;

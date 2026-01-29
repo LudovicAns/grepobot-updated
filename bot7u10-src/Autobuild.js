@@ -1,5 +1,6 @@
 /**
- * Autobuild feature for automatic build buildings and units
+ * Autobuild module: manages build/units queues and drives scheduling.
+ * Responsibilities: maintain bot queues, hook queue UI, and trigger builds.
  */
 Autobuild = {
   settings: {
@@ -94,6 +95,7 @@ Autobuild = {
     var _renderQueue = function (_originalRenderQueue) {
       return function () {
         _originalRenderQueue["apply"](this, arguments);
+        // Hook queue render and inject bot items in the right queue.
         var ordersView = this.$el;
         if (!ordersView.hasClass("ui_various_orders")) {
           ordersView = this.$el.find(".ui_various_orders");

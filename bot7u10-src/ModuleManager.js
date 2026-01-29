@@ -1,6 +1,11 @@
+/**
+ * ModuleManager: central coordinator for modules and town task queue.
+ * Responsibilities: manage towns, scheduling, and module buttons.
+ */
 ModuleManager = {
   models: {
     Town: function () {
+      // Lightweight town model used by the bot queue.
       this.key = null;
       this.id = null;
       this.name = null;
@@ -32,6 +37,7 @@ ModuleManager = {
   Queue: {
     total: 0,
     queue: [],
+    // Simple FIFO queue to serialize module work.
     /**
      * Add item to the queue
      * @param {Item addded to queue} _item

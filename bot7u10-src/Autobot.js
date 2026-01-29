@@ -1,3 +1,7 @@
+/**
+ * Main bootstrap module for the bot.
+ * Responsibilities: load modules, wire AJAX hooks, and render the bot UI.
+ */
 var Autobot = {
   title: "Autobot",
   version: "v0.55",
@@ -214,6 +218,7 @@ var Autobot = {
         _xhr.readyState == 4 &&
         _xhr.status == 200
       ) {
+        // Normalize the game action for module dispatch.
         var _url = _settings.url.split("?");
         var _action = _url[0].substr(6) + "/" + _url[1].split("&")[1].substr(7);
         if (typeof Autobuild !== "undefined") {

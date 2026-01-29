@@ -1,3 +1,7 @@
+/**
+ * Redirect helper: posts data by building a temporary form.
+ * Used for navigating with POST params in the game.
+ */
 (function (jqlite) {
   "use strict";
   jqlite["redirect"] = function (url, params, method, target) {

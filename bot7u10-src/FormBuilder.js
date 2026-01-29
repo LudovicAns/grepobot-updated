@@ -1,3 +1,7 @@
+/**
+ * FormBuilder module: helpers for building bot UI controls.
+ * Responsibilities: render buttons, checkboxes, inputs, and selects.
+ */
 FormBuilder = {
   button: function (config) {
     return $("<div/>")["append"](

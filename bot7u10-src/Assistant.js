@@ -1,3 +1,7 @@
+/**
+ * Assistant module: toggles map overlays and persists simple settings.
+ * Responsibilities: load/save settings and toggle map CSS classes.
+ */
 Assistant = {
   settings: {
     town_names: false,
@@ -30,6 +34,7 @@ Assistant = {
     );
   },
   initSettings: function () {
+    // Toggle map overlays based on current settings.
     if (Assistant["settings"]["town_names"]) {
       $("#map_towns .flag")["addClass"]("active_town");
     } else {

@@ -1,3 +1,7 @@
+/**
+ * ConsoleLog module: central log buffer with in-game console rendering.
+ * Responsibilities: store log entries and keep the UI scrolled.
+ */
 ConsoleLog = {
   Logs: [],
   Types: ["Autobot", "Farming", "Culture", "Builder", "Attack "],
@@ -64,6 +68,7 @@ ConsoleLog = {
     clearInterval(this["scrollInterval"]);
     var terminal = $(".terminal");
     var terminalOutput = $(".terminal-output");
+    // Toggle auto-scroll only when user is already at the bottom.
     if (
       terminal["scrollTop"]() + terminal["height"]() ==
       terminalOutput["height"]()

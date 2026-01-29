@@ -1,3 +1,7 @@
+/**
+ * Autoculture module: schedules culture actions (party/triumph/theater).
+ * Responsibilities: check availability and fire actions per town.
+ */
 Autoculture = {
   settings: {
     autostart: false,
@@ -20,6 +24,7 @@ Autoculture = {
     }
   },
   checkAvailable: function (townId) {
+    // Compute which culture actions are available in the given town.
     var availability = {
       party: false,
       triumph: false,
