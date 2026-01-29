@@ -197,7 +197,7 @@ ModuleManager = {
   stop: function () {
     clearInterval(ModuleManager.interval);
     ModuleManager["Queue"]["stop"]();
-    $("#time_autobot .caption .value_container .curr")["html"]("Stopped");
+    $("#time_grepobot_updated .caption .value_container .curr")["html"]("Stopped");
   },
   /**
    * On finish the queue cycle, call the start function to get the next timer
@@ -210,7 +210,7 @@ ModuleManager = {
    */
   initTimer: function () {
     $(".nui_main_menu").css("top", "276px");
-    $("#time_autobot")
+    $("#time_grepobot_updated")
       .append(
         FormBuilder.timerBoxSmall({
           id: "Autofarm_timer",
@@ -234,8 +234,8 @@ ModuleManager = {
       100;
     //};
     if (!isNaN(_progress)) {
-      $("#time_autobot .progress .indicator").width(_progress + "%");
-      $("#time_autobot .caption .value_container .curr").html(
+      $("#time_grepobot_updated .progress .indicator").width(_progress + "%");
+      $("#time_grepobot_updated .caption .value_container .curr").html(
         Math.round(_progress) + "%",
       );
     }
@@ -277,10 +277,10 @@ ModuleManager = {
   startTimer: function (intervalSeconds, onComplete) {
     var initialInterval = intervalSeconds;
     ModuleManager.interval = setInterval(function () {
-      $("#time_autobot .caption .value_container .curr")["html"](
-        Autobot["toHHMMSS"](intervalSeconds),
+      $("#time_grepobot_updated .caption .value_container .curr")["html"](
+        GrepoBotUpdated["toHHMMSS"](intervalSeconds),
       );
-      $("#time_autobot .progress .indicator")["width"](
+      $("#time_grepobot_updated .progress .indicator")["width"](
         ((initialInterval - intervalSeconds) / initialInterval) * 100 + "%",
       );
       intervalSeconds--;
@@ -295,7 +295,7 @@ ModuleManager = {
     toggleEl["removeClass"]("disabled");
     toggleEl["on"]("click", function (event) {
       event["preventDefault"]();
-      if (moduleName == "Autoattack" && !Autobot["checkPremium"]("captain")) {
+      if (moduleName == "Autoattack" && !GrepoBotUpdated["checkPremium"]("captain")) {
         HumanMessage["error"](
           Game["premium_data"]["captain"]["name"] +
             " " +
@@ -398,17 +398,17 @@ ModuleManager = {
     });
   },
   loadModules: function () {
-    Autobot["isLogged"] = true;
-    //Autobot['trial_time'] = _0xa6b2x1e['trial_time'];
-    //Autobot['premium_time'] = _0xa6b2x1e['premium_time'];
-    //Autobot['facebook_like'] = _0xa6b2x1e['facebook_like'];
+    GrepoBotUpdated["isLogged"] = true;
+    //GrepoBotUpdated['trial_time'] = _0xa6b2x1e['trial_time'];
+    //GrepoBotUpdated['premium_time'] = _0xa6b2x1e['premium_time'];
+    //GrepoBotUpdated['facebook_like'] = _0xa6b2x1e['facebook_like'];
     //if (_0xa6b2x1e['assistant_settings'] != '') {
     //    Assistant['setSettings'](_0xa6b2x1e['assistant_settings'])
     //};
     /*if (!_0xa6b2x1e['player_email']) {
-            Autobot['verifyEmail']()
+            GrepoBotUpdated['verifyEmail']()
         };*/
-    //if (Autobot['trial_time'] - Timestamp['now']() >= 0 || Autobot['premium_time'] - Timestamp['now']() >= 0) {
+    //if (GrepoBotUpdated['trial_time'] - Timestamp['now']() >= 0 || GrepoBotUpdated['premium_time'] - Timestamp['now']() >= 0) {
     if (
       typeof Autofarm == "undefined" &&
       typeof Autoculture == "undefined" &&
@@ -418,26 +418,26 @@ ModuleManager = {
       $["when"](
         $["ajax"]({
           method: "GET",
-          //data: Autobot['Account'],
-          url: Autobot["domain"] + "Autofarm.js",
+          //data: GrepoBotUpdated['Account'],
+          url: GrepoBotUpdated["domain"] + "Autofarm.js",
           dataType: "script",
         }),
         $["ajax"]({
           method: "GET",
-          //data: Autobot['Account'],
-          url: Autobot["domain"] + "Autoculture.js",
+          //data: GrepoBotUpdated['Account'],
+          url: GrepoBotUpdated["domain"] + "Autoculture.js",
           dataType: "script",
         }),
         $["ajax"]({
           method: "GET",
-          //data: Autobot['Account'],
-          url: Autobot["domain"] + "Autobuild.js",
+          //data: GrepoBotUpdated['Account'],
+          url: GrepoBotUpdated["domain"] + "Autobuild.js",
           dataType: "script",
         }),
         $["ajax"]({
           method: "GET",
-          //data: Autobot['Account'],
-          url: Autobot["domain"] + "Autoattack.js",
+          //data: GrepoBotUpdated['Account'],
+          url: GrepoBotUpdated["domain"] + "Autoattack.js",
           dataType: "script",
         }),
         $.Deferred(function (deferred) {
@@ -460,8 +460,8 @@ ModuleManager = {
             if (typeof Autofarm == 'undefined') {
                 $['when']($['ajax']({
                     method: 'GET',
-                    //data: Autobot['Account'],
-                    url: Autobot['domain'] + 'Autofarm.js',
+                    //data: GrepoBotUpdated['Account'],
+                    url: GrepoBotUpdated['domain'] + 'Autofarm.js',
                     dataType: 'script'
                 }), $.Deferred(function(_0xa6b2x1f) {
                     $(_0xa6b2x1f['resolve'])
@@ -473,7 +473,7 @@ ModuleManager = {
             $('#Autoculture_onoff')['mousePopup'](new MousePopup(ModuleManager['requiredPrem']));
             $('#Autobuild_onoff')['mousePopup'](new MousePopup(ModuleManager['requiredPrem']));
             $('#Autoattack_onoff')['mousePopup'](new MousePopup(ModuleManager['requiredPrem']));
-            Autobot['createNotification']('getPremiumNotification', 'Unfortunately your premium membership is over. Please upgrade now!')
+            GrepoBotUpdated['createNotification']('getPremiumNotification', 'Unfortunately your premium membership is over. Please upgrade now!')
         }*/
   },
   requiredPrem:

@@ -203,7 +203,7 @@ Autoculture = {
                     "#countdown_" + celebration["name"],
                   )["length"]
                 ) {
-                  var countdownSeconds = Autobot["timeToSeconds"](
+                  var countdownSeconds = GrepoBotUpdated["timeToSeconds"](
                     celebration["element"]
                       ["find"]("#countdown_" + celebration["name"])
                       ["html"](),
@@ -257,7 +257,7 @@ Autoculture = {
                           );
                         },
                         (celebrationIndex + 1) *
-                          Autobot["randomize"](1000, 2000),
+                          GrepoBotUpdated["randomize"](1000, 2000),
                       );
                       return false;
                     }
@@ -271,7 +271,7 @@ Autoculture = {
           );
         }
       },
-      Autobot["randomize"](2000, 4000),
+      GrepoBotUpdated["randomize"](2000, 4000),
     );
   },
   startCelebration: function (celebration, onComplete) {

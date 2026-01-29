@@ -416,7 +416,7 @@ var GrepoBotUpdated = {
       )
       ["append"](
         $("<div/>", {
-          id: "time_autobot",
+          id: "time_grepobot_updated",
           class: "time_row",
         }),
       )

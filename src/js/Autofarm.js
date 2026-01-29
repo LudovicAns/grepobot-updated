@@ -119,7 +119,7 @@ Autofarm = {
             });
           }
         },
-        Autobot["randomize"](1000, 2000),
+        GrepoBotUpdated["randomize"](1000, 2000),
       );
     };
     if (ModuleManager["currentTown"] != Autofarm["town"]["key"]) {
@@ -141,7 +141,7 @@ Autofarm = {
 
           Autofarm["town"]["isSwitched"] = true;
         },
-        Autobot["randomize"](1000, 2000),
+        GrepoBotUpdated["randomize"](1000, 2000),
       );
     }
     startFarmCycle();
@@ -267,7 +267,7 @@ Autofarm = {
             });
           }
         },
-        Autobot["randomize"](
+        GrepoBotUpdated["randomize"](
           Autofarm["settings"]["timebetween"] * 1000,
           Autofarm["settings"]["timebetween"] * 1000 + 1000,
         ),

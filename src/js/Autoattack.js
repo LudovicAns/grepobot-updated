@@ -13,7 +13,7 @@ Autoattack = {
   init: function () {
     ConsoleLog.Log("Initialize Autoattack", 4);
     Autoattack["initButton"]();
-    if (Autobot["checkPremium"]("captain")) {
+    if (GrepoBotUpdated["checkPremium"]("captain")) {
       Autoattack["loadAttackQueue"]();
     }
   },
@@ -139,7 +139,7 @@ Autoattack = {
           timerInfo["message"] = $(
             "#attack_order_id_" + timerInfo["attack_id"] + " .attack_bot_timer",
           );
-          timerInfo["message"]["html"](Autobot["toHHMMSS"](secondsRemaining));
+          timerInfo["message"]["html"](GrepoBotUpdated["toHHMMSS"](secondsRemaining));
           if (
             secondsRemaining == 300 ||
             secondsRemaining == 120 ||
@@ -281,7 +281,7 @@ Autoattack = {
     }
   },
   setAttackData: function (response) {
-    if (Autobot["checkPremium"]("captain")) {
+    if (GrepoBotUpdated["checkPremium"]("captain")) {
       Autoattack["attacks"] =
         response["data"]["attacks"] != undefined
           ? response["data"]["attacks"]
@@ -376,7 +376,7 @@ Autoattack = {
           );
           if (timers["length"]) {
             if (timers[0]["is_running"]) {
-              return Autobot["toHHMMSS"](
+              return GrepoBotUpdated["toHHMMSS"](
                 attack["send_at"] - Timestamp["now"](),
               );
             } else {
@@ -437,9 +437,9 @@ Autoattack = {
             "attack_planner"
           ],
           style: "float: left;",
-          class: !Autobot["checkPremium"]("captain") ? " disabled" : "",
+          class: !GrepoBotUpdated["checkPremium"]("captain") ? " disabled" : "",
         });
-        return Autobot["checkPremium"]("captain")
+        return GrepoBotUpdated["checkPremium"]("captain")
           ? button["click"](function () {
               AttackPlannerWindowFactory["openAttackPlannerWindow"]();
             })
@@ -449,16 +449,16 @@ Autoattack = {
         var button = FormBuilder["button"]({
           name: DM["getl10n"]("update_notification")["refresh"],
           style: "float: left;",
-          class: !Autobot["checkPremium"]("captain") ? " disabled" : "",
+          class: !GrepoBotUpdated["checkPremium"]("captain") ? " disabled" : "",
         });
-        return Autobot["checkPremium"]("captain")
+        return GrepoBotUpdated["checkPremium"]("captain")
           ? button["click"](function () {
               Autoattack["setAttackQueue"](container);
             })
           : button;
       })
       ["append"](function () {
-        if (!Autobot["checkPremium"]("captain")) {
+        if (!GrepoBotUpdated["checkPremium"]("captain")) {
           return FormBuilder["button"]({
             name: DM["getl10n"]("construction_queue")["advisor_banner"][
               "activate"

@@ -309,12 +309,12 @@ Autobuild = {
                   Autobuild.instantBuyTown = false;
                   Autobuild.startQueueing();
                 },
-                Autobot.randomize(500, 700),
+                GrepoBotUpdated.randomize(500, 700),
               );
             },
           );
         },
-        Autobot.randomize(1000, 2000),
+        GrepoBotUpdated.randomize(1000, 2000),
       );
       //if no instant buy is available or not activated
     } else {
@@ -487,7 +487,7 @@ Autobuild = {
               },
             );
           },
-          Autobot.randomize(1000, 2000),
+          GrepoBotUpdated.randomize(1000, 2000),
         );
       } else {
         Autobuild.finished();
@@ -571,7 +571,7 @@ Autobuild = {
                 },
               );
             },
-            Autobot.randomize(1000, 2000),
+            GrepoBotUpdated.randomize(1000, 2000),
           );
         } else {
           ConsoleLog.Log(
