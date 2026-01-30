@@ -41,3 +41,8 @@ step so `GrepoBotUpdated.user.js` is updated.
 - JavaScript: `src/js`
 - CSS: `src/styles/GrepoBotUpdated.css`
 - Assets: `src/assets/images`
+
+## Avertissement / CGU
+Ce programme a ete mis a jour pour le plaisir et le challenge. Il ne doit en
+aucun cas etre utilise sans l'autorisation d'InnoGames. Merci de respecter les
+CGU d'InnoGames.
