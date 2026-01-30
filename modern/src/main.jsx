@@ -6,8 +6,7 @@ import App from "./App.jsx";
 const MOUNT_ID = "grepobot-modern-root";
 const LAUNCHER_ID = "grepobot-modern-launcher";
 const CONTAINER_ID = "grepobot-modern-container";
-const ROOT_BASE_CLASSES =
-  "gb:fixed gb:top-1/2 gb:left-1/2 gb:-translate-x-1/2 gb:-translate-y-1/2 gb:z-[100000]";
+const ROOT_BASE_CLASSES = "gb:fixed gb:z-[100000]";
 const ROOT_HIDDEN_CLASS = "gb:hidden";
 const ROOT_VISIBLE_CLASS = "gb:block";
 const LAUNCHER_CLASSES =
