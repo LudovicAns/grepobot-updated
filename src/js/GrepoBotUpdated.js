@@ -23,7 +23,7 @@ var GrepoBotUpdated = {
     top: 6,
   },
   menuWindowDefaults: {
-    width: 600,
+    width: 650,
     height: 400,
   },
   locales: {},
