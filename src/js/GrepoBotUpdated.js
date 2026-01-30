@@ -18,6 +18,125 @@ var GrepoBotUpdated = {
     premium_grepolis: Game.premium_user,
     csrfToken: Game.csrfToken,
   },
+  menuWrapperDefaults: {
+    left: -50,
+    top: 6,
+  },
+  menuWindowDefaults: {
+    width: 600,
+    height: 400,
+  },
+  getMenuWindowSize: function () {
+    var defaults = GrepoBotUpdated.menuWindowDefaults;
+    var raw = localStorage.getItem("GrepoBotUpdated.MenuWindowSize");
+    if (!raw) {
+      return {
+        width: defaults.width,
+        height: defaults.height,
+      };
+    }
+    try {
+      var parsed = JSON.parse(raw);
+      var width = parseInt(parsed.width, 10);
+      var height = parseInt(parsed.height, 10);
+      return {
+        width: isNaN(width) ? defaults.width : width,
+        height: isNaN(height) ? defaults.height : height,
+      };
+    } catch (err) {
+      return {
+        width: defaults.width,
+        height: defaults.height,
+      };
+    }
+  },
+  applyMenuWindowSize: function () {
+    var size = GrepoBotUpdated.getMenuWindowSize();
+    if (!GrepoBotUpdated.botWnd) {
+      return;
+    }
+    if (GrepoBotUpdated.botWnd.setHeight) {
+      GrepoBotUpdated.botWnd.setHeight([size.height]);
+    }
+    if (GrepoBotUpdated.botWnd.setWidth) {
+      GrepoBotUpdated.botWnd.setWidth([size.width]);
+    } else if (GrepoBotUpdated.botWnd.getJQElement) {
+      var container = GrepoBotUpdated.botWnd
+        .getJQElement()
+        .closest(".ui-dialog");
+      if (container.length) {
+        container.css("width", size.width + "px");
+      }
+    }
+  },
+  setMenuWindowSize: function (width, height, persist) {
+    var shouldPersist = persist !== false;
+    var size = {
+      width: width,
+      height: height,
+    };
+    if (shouldPersist) {
+      localStorage.setItem(
+        "GrepoBotUpdated.MenuWindowSize",
+        JSON.stringify(size),
+      );
+    }
+    GrepoBotUpdated.applyMenuWindowSize();
+  },
+  getMenuWrapperOffset: function () {
+    var defaults = GrepoBotUpdated.menuWrapperDefaults;
+    var raw = localStorage.getItem("GrepoBotUpdated.MenuWrapperOffset");
+    if (!raw) {
+      return {
+        left: defaults.left,
+        top: defaults.top,
+      };
+    }
+    try {
+      var parsed = JSON.parse(raw);
+      var left = parseFloat(parsed.left);
+      var top = parseFloat(parsed.top);
+      return {
+        left: isNaN(left) ? defaults.left : left,
+        top: isNaN(top) ? defaults.top : top,
+      };
+    } catch (err) {
+      return {
+        left: defaults.left,
+        top: defaults.top,
+      };
+    }
+  },
+  formatMenuWrapperStyle: function (offset) {
+    return "left: " + offset.left + "px; top: " + offset.top + "px;";
+  },
+  applyMenuWrapperOffset: function () {
+    var offset = GrepoBotUpdated.getMenuWrapperOffset();
+    var menuWrapper = $(".menu_wrapper");
+    if (GrepoBotUpdated.botWnd && GrepoBotUpdated.botWnd.getJQElement) {
+      menuWrapper = GrepoBotUpdated.botWnd.getJQElement().find(".menu_wrapper");
+    }
+    if (menuWrapper.length) {
+      menuWrapper.css({
+        left: offset.left + "px",
+        top: offset.top + "px",
+      });
+    }
+  },
+  setMenuWrapperOffset: function (left, top, persist) {
+    var shouldPersist = persist !== false;
+    var offset = {
+      left: left,
+      top: top,
+    };
+    if (shouldPersist) {
+      localStorage.setItem(
+        "GrepoBotUpdated.MenuWrapperOffset",
+        JSON.stringify(offset),
+      );
+    }
+    GrepoBotUpdated.applyMenuWrapperOffset();
+  },
   init: function () {
     ConsoleLog.Log("Initialize GrepoBot Updated", 0);
     GrepoBotUpdated.loadModules();
@@ -47,21 +166,24 @@ var GrepoBotUpdated = {
       GrepoBotUpdated["botWnd"] = undefined;
     }
 
+    var wndSize = GrepoBotUpdated.getMenuWindowSize();
     GrepoBotUpdated.botWnd = Layout.dialogWindow.open(
       "",
       GrepoBotUpdated.title + " " + GrepoBotUpdated.version,
-      500,
-      350,
+      wndSize.width,
+      wndSize.height,
       "",
       false,
     );
-    GrepoBotUpdated.botWnd.setHeight([350]);
+    GrepoBotUpdated.botWnd.setHeight([wndSize.height]);
     GrepoBotUpdated.botWnd.setPosition(["center", "center"]);
     var botWindow = GrepoBotUpdated.botWnd.getJQElement();
     botWindow["append"](
       $("<div/>", {
         "\x63\x6C\x61\x73\x73": "menu_wrapper",
-        "\x73\x74\x79\x6C\x65": "left: -60px; top: 6px;",
+        "\x73\x74\x79\x6C\x65": GrepoBotUpdated.formatMenuWrapperStyle(
+          GrepoBotUpdated.getMenuWrapperOffset(),
+        ),
       })["append"](
         $("<ul/>", {
           "\x63\x6C\x61\x73\x73": "menu_inner",
@@ -95,6 +217,14 @@ var GrepoBotUpdated = {
         GrepoBotUpdated["addMenuItem"]("FARMMODULE", "Farm", "Autofarm"),
       );
     }
+    var authorizeItem = botWindow["find"]("#GrepoBotUpdated-AUTHORIZE");
+    if (authorizeItem["length"]) {
+      authorizeItem["closest"]("li")["before"](
+        GrepoBotUpdated["addMenuItem"]("UI", "UI", "UI"),
+      );
+    }
+    GrepoBotUpdated.applyMenuWrapperOffset();
+    GrepoBotUpdated.applyMenuWindowSize();
     $("#GrepoBotUpdated-AUTHORIZE")["click"]();
   },
   addMenuItem: function (menuId, label, relKey) {
@@ -140,20 +270,21 @@ var GrepoBotUpdated = {
   getContent: function (tabKey) {
     if (tabKey == "Console") {
       return ConsoleLog["contentConsole"]();
-    } else {
-      if (tabKey == "Account") {
-        return GrepoBotUpdated["contentAccount"]();
-      } else {
-        /*if (tabKey == 'Support') {
-                    return GrepoBotUpdated['contentSupport']()
-                } else {*/
-        if (typeof window[tabKey] != "undefined") {
-          return window[tabKey]["contentSettings"]();
-        }
-        return "";
-        //}
-      }
     }
+    if (tabKey == "Account") {
+      return GrepoBotUpdated["contentAccount"]();
+    }
+    if (tabKey == "UI") {
+      return GrepoBotUpdated["contentUi"]();
+    }
+    /*if (tabKey == 'Support') {
+            return GrepoBotUpdated['contentSupport']()
+        } else {*/
+    if (typeof window[tabKey] != "undefined") {
+      return window[tabKey]["contentSettings"]();
+    }
+    return "";
+    //}
   },
 
   /**
@@ -196,6 +327,118 @@ var GrepoBotUpdated = {
       _table,
       "margin-bottom:9px;",
     )[0]["outerHTML"];
+  },
+  contentUi: function () {
+    var offset = GrepoBotUpdated.getMenuWrapperOffset();
+    var size = GrepoBotUpdated.getMenuWindowSize();
+    var form = $("<div/>", {
+      id: "grepobot_ui_settings",
+      style: "padding: 10px;",
+    })
+      ["append"](
+        FormBuilder["input"]({
+          name: "Menu left (px)",
+          id: "grepobot_ui_menu_left",
+          type: "text",
+          value: offset.left,
+          size: 6,
+          style: "width: 90px;",
+        }),
+      )
+      ["append"](
+        FormBuilder["input"]({
+          name: "Menu top (px)",
+          id: "grepobot_ui_menu_top",
+          type: "text",
+          value: offset.top,
+          size: 6,
+          style: "width: 90px;",
+        }),
+      )
+      ["append"](
+        FormBuilder["input"]({
+          name: "Window width (px)",
+          id: "grepobot_ui_window_width",
+          type: "text",
+          value: size.width,
+          size: 6,
+          style: "width: 90px;",
+        }),
+      )
+      ["append"](
+        FormBuilder["input"]({
+          name: "Window height (px)",
+          id: "grepobot_ui_window_height",
+          type: "text",
+          value: size.height,
+          size: 6,
+          style: "width: 90px;",
+        }),
+      )
+      ["append"](
+        FormBuilder["button"]({
+          name: "Apply",
+          style: "margin-right: 6px;",
+        })["on"]("click", function (event) {
+          event["preventDefault"]();
+          var leftValue = parseFloat($("#grepobot_ui_menu_left").val());
+          var topValue = parseFloat($("#grepobot_ui_menu_top").val());
+          var widthValue = parseInt($("#grepobot_ui_window_width").val(), 10);
+          var heightValue = parseInt($("#grepobot_ui_window_height").val(), 10);
+          if (isNaN(leftValue)) {
+            leftValue = GrepoBotUpdated.menuWrapperDefaults.left;
+          }
+          if (isNaN(topValue)) {
+            topValue = GrepoBotUpdated.menuWrapperDefaults.top;
+          }
+          if (isNaN(widthValue)) {
+            widthValue = GrepoBotUpdated.menuWindowDefaults.width;
+          }
+          if (isNaN(heightValue)) {
+            heightValue = GrepoBotUpdated.menuWindowDefaults.height;
+          }
+          GrepoBotUpdated.setMenuWrapperOffset(leftValue, topValue);
+          GrepoBotUpdated.setMenuWindowSize(widthValue, heightValue);
+        }),
+      )
+      ["append"](
+        FormBuilder["button"]({
+          name: "Reset",
+        })["on"]("click", function (event) {
+          event["preventDefault"]();
+          $("#grepobot_ui_menu_left").val(
+            GrepoBotUpdated.menuWrapperDefaults.left,
+          );
+          $("#grepobot_ui_menu_top").val(
+            GrepoBotUpdated.menuWrapperDefaults.top,
+          );
+          $("#grepobot_ui_window_width").val(
+            GrepoBotUpdated.menuWindowDefaults.width,
+          );
+          $("#grepobot_ui_window_height").val(
+            GrepoBotUpdated.menuWindowDefaults.height,
+          );
+          GrepoBotUpdated.setMenuWrapperOffset(
+            GrepoBotUpdated.menuWrapperDefaults.left,
+            GrepoBotUpdated.menuWrapperDefaults.top,
+          );
+          GrepoBotUpdated.setMenuWindowSize(
+            GrepoBotUpdated.menuWindowDefaults.width,
+            GrepoBotUpdated.menuWindowDefaults.height,
+          );
+        }),
+      )
+      ["append"](
+        $("<div/>", {
+          style: "clear: both;",
+        }),
+      );
+    return FormBuilder.gameWrapper(
+      "UI",
+      "grepobot_ui_wrapper",
+      form,
+      "margin-bottom:9px;",
+    );
   },
   fixMessage: function () {
     var wrapInitialize = function (originalInit) {

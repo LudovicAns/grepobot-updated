@@ -1635,7 +1635,8 @@ Autobuild = {
   contentSettings: function () {
     return $("<fieldset/>", {
       id: "Autobuild_settings",
-      style: "float:left; width:472px; height: 270px;",
+      style:
+        "float:left; width:calc(100% - 10px); min-height: 270px; box-sizing:border-box;",
     })
       .append($("<legend/>").html("Autobuild Settings"))
       .append(

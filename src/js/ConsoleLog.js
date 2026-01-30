@@ -9,12 +9,13 @@ ConsoleLog = {
   scrollUpdate: true,
   contentConsole: function () {
     var consoleFieldset = $("<fieldset/>", {
-      style: "float:left; width:472px;",
+      style: "float:left; width:calc(100% - 10px); box-sizing:border-box;",
     })
       ["append"]($("<legend/>")["html"]("GrepoBot Updated Console"))
       ["append"](
         $("<div/>", {
           class: "terminal",
+          style: "height: calc(100% - 30px);",
         })
           ["append"](
             $("<div/>", {

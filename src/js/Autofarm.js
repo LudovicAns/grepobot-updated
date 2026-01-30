@@ -501,7 +501,8 @@ Autofarm = {
   contentSettings: function () {
     return $("<fieldset/>", {
       id: "Autofarm_settings",
-      style: "float:left; width:472px;height: 270px;",
+      style:
+        "float:left; width:calc(100% - 10px); height: 270px; box-sizing:border-box;",
     })
       ["append"]($("<legend/>")["html"](Autofarm["title"]))
       ["append"](

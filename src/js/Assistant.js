@@ -54,7 +54,8 @@ Assistant = {
   contentSettings: function () {
     return $("<fieldset/>", {
       "\x69\x64": "Assistant_settings",
-      "\x73\x74\x79\x6C\x65": "float:left; width:472px;height: 270px;",
+      "\x73\x74\x79\x6C\x65":
+        "float:left; width:calc(100% - 10px); height: 270px; box-sizing:border-box;",
     })
       ["append"]($("<legend/>")["html"]("Assistant Settings"))
       ["append"](
