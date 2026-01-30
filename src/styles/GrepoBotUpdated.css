@@ -145,7 +145,8 @@
 .terminal {
     padding: 10px;
     position: relative;
-    overflow-x: auto;
+    overflow-x: auto !important;
+    overflow-y: auto !important;
     height: 236px;
     font-family: FreeMono, monospace;
     color: #aaa;

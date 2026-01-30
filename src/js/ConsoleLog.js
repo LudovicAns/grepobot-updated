@@ -15,7 +15,8 @@ ConsoleLog = {
   scrollUpdate: true,
   contentConsole: function () {
     var consoleFieldset = $("<fieldset/>", {
-      style: "float:left; width:calc(100% - 10px); box-sizing:border-box;",
+      style:
+        "float:left; width:calc(100% - 10px); height: calc(100% - 10px); box-sizing:border-box; display:flex; flex-direction:column;",
     })
       ["append"](
         $("<legend/>")["html"](
@@ -25,7 +26,8 @@ ConsoleLog = {
       ["append"](
         $("<div/>", {
           class: "terminal",
-          style: "height: calc(100% - 30px);",
+          style:
+            "flex:1 1 auto; min-height: 0; overflow-y: auto; overflow-x: auto;",
         })
           ["append"](
             $("<div/>", {

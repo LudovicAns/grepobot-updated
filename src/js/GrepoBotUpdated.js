@@ -78,6 +78,54 @@ var GrepoBotUpdated = {
       tokens || {},
     );
   },
+  debugLog: function (message, type) {
+    var resolvedType =
+      typeof type === "number" && !isNaN(type) ? type : 0;
+    var text = "";
+    if (message !== undefined && message !== null) {
+      if (typeof message === "string") {
+        text = message;
+      } else {
+        try {
+          text = JSON.stringify(message);
+        } catch (err) {
+          text = String(message);
+        }
+      }
+    }
+    if (typeof ConsoleLog !== "undefined" && ConsoleLog.Log) {
+      ConsoleLog.Log(text, resolvedType);
+    } else {
+      console.log("[GrepoBot Updated]", text);
+    }
+  },
+  debugHelp: function () {
+    var lines = [
+      GrepoBotUpdated.t("debug.help.title", "GrepoBot debug helper"),
+      GrepoBotUpdated.t(
+        "debug.help.usage",
+        "Usage: GrepoBotUpdated.debugLog(message, type)",
+      ),
+      GrepoBotUpdated.t(
+        "debug.help.types",
+        "Types: 0=bot, 1=villages, 2=culture, 3=construction, 4=attack",
+      ),
+      GrepoBotUpdated.t(
+        "debug.help.example",
+        "Example: GrepoBotUpdated.debugLog('Test', 1)",
+      ),
+    ];
+    if (typeof ConsoleLog !== "undefined" && ConsoleLog.Log) {
+      ConsoleLog.Log(
+        '<span style="color: #8ad;">' + lines.join("<br>") + "</span>",
+        0,
+      );
+    }
+    if (typeof console !== "undefined" && console.info) {
+      console.info(lines.join("\n"));
+    }
+    return lines.join("\n");
+  },
   getMenuWindowSize: function () {
     var defaults = GrepoBotUpdated.menuWindowDefaults;
     var raw = localStorage.getItem("GrepoBotUpdated.MenuWindowSize");

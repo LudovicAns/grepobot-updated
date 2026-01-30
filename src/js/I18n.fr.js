@@ -110,4 +110,9 @@ GrepoBotUpdated.locales.fr = {
   "assistant.auto_relogin.after_10": "Après 10 minutes",
   "assistant.auto_relogin.after_15": "Après 15 minutes",
   "autoattack.title": "AutoAttack",
+  "debug.help.title": "Aide debug GrepoBot",
+  "debug.help.usage": "Utilisation : GrepoBotUpdated.debugLog(message, type)",
+  "debug.help.types":
+    "Types : 0=bot, 1=villages, 2=culture, 3=construction, 4=attaque",
+  "debug.help.example": "Exemple : GrepoBotUpdated.debugLog('Test', 1)",
 };
