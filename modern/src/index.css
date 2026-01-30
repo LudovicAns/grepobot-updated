@@ -131,6 +131,16 @@
   #grepobot-modern-container {
     @apply gb:bg-background gb:text-foreground;
   }
+  #grepobot-modern-container h1,
+  #grepobot-modern-container h2,
+  #grepobot-modern-container h3,
+  #grepobot-modern-container h4,
+  #grepobot-modern-container p,
+  #grepobot-modern-container blockquote {
+    color: inherit;
+    margin: 0;
+    padding: 0;
+  }
   #grepobot-modern-container button {
     background: transparent;
     padding: 0;
