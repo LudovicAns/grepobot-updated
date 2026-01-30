@@ -30,8 +30,14 @@ Autoculture = {
       triumph: false,
       theater: false,
     };
-    var buildings = ITowns["towns"][townId]["buildings"]()["attributes"];
-    var resources = ITowns["towns"][townId]["resources"]();
+    var buildings;
+    var resources;
+    try {
+      buildings = ITowns["towns"][townId]["buildings"]()["attributes"];
+      resources = ITowns["towns"][townId]["resources"]();
+    } catch (err) {
+      return availability;
+    }
     if (
       buildings["academy"] >= 30 &&
       resources["wood"] >= 15000 &&

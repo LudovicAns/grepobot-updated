@@ -22,6 +22,9 @@ Autofarm = {
   checkReady: function (town) {
     // Decide if the town should farm based on resources and settings.
     var iTown = ITowns["towns"][town["id"]];
+    if (!iTown) {
+      return false;
+    }
     if (iTown["hasConqueror"]()) {
       return false;
     }
@@ -31,7 +34,12 @@ Autofarm = {
     if (town["modules"]["Autofarm"]["isReadyTime"] >= Timestamp["now"]()) {
       return town["modules"]["Autofarm"]["isReadyTime"];
     }
-    var resources = iTown["resources"]();
+    var resources;
+    try {
+      resources = iTown["resources"]();
+    } catch (err) {
+      return false;
+    }
     if (
       resources["wood"] == resources["storage"] &&
       resources["stone"] == resources["storage"] &&
@@ -54,8 +62,14 @@ Autofarm = {
       if (town["relatedTowns"]["length"] > 0) {
         skipTown = false;
         $["each"](town["relatedTowns"], function (index, relatedTownId) {
-          var townResources = iTown["resources"]();
-          var relatedResources = ITowns["towns"][relatedTownId]["resources"]();
+          var townResources;
+          var relatedResources;
+          try {
+            townResources = iTown["resources"]();
+            relatedResources = ITowns["towns"][relatedTownId]["resources"]();
+          } catch (err) {
+            return false;
+          }
           if (
             townResources["wood"] +
               townResources["stone"] +

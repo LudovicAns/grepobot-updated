@@ -113,10 +113,20 @@ ModuleManager = {
   start: function () {
     var queueNotEmpty = false;
     var nextTimestamp = null;
+    var safeCheckReady = function (moduleName, fn) {
+      try {
+        return fn();
+      } catch (err) {
+        ConsoleLog.Log(moduleName + " checkReady failed.", 0);
+        return false;
+      }
+    };
     $.each(ModuleManager.playerTowns, function (index, town) {
       //Autofarm
       if (typeof Autofarm !== "undefined") {
-        var readyStatus = Autofarm.checkReady(town);
+        var readyStatus = safeCheckReady("Autofarm", function () {
+          return Autofarm.checkReady(town);
+        });
         if (readyStatus == true) {
           queueNotEmpty = true;
           ModuleManager.Queue.add({
@@ -136,7 +146,9 @@ ModuleManager = {
       }
       //Autoculture
       if (typeof Autoculture !== "undefined") {
-        var readyStatus = Autoculture["checkReady"](town);
+        var readyStatus = safeCheckReady("Autoculture", function () {
+          return Autoculture["checkReady"](town);
+        });
         if (readyStatus == true) {
           queueNotEmpty = true;
           ModuleManager.Queue.add({
@@ -156,7 +168,9 @@ ModuleManager = {
       }
       //Autobuild
       if (typeof Autobuild !== "undefined") {
-        var readyStatus = Autobuild["checkReady"](town);
+        var readyStatus = safeCheckReady("Autobuild", function () {
+          return Autobuild["checkReady"](town);
+        });
         if (readyStatus == true) {
           queueNotEmpty = true;
           ModuleManager.Queue.add({
