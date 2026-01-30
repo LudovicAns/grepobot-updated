@@ -11,7 +11,10 @@ Autoattack = {
   view: null,
   checked_count: 0,
   init: function () {
-    ConsoleLog.Log("Initialize Autoattack", 4);
+    ConsoleLog.Log(
+      GrepoBotUpdated.t("console.init.autoattack", "Initialize Autoattack"),
+      4,
+    );
     Autoattack["initButton"]();
     if (GrepoBotUpdated["checkPremium"]("captain")) {
       Autoattack["loadAttackQueue"]();
@@ -190,7 +193,15 @@ Autoattack = {
   stopTimer: function (timerInfo) {
     clearInterval(timerInfo["interval"]);
     if (Autoattack["countRunningAttacks"]() == 0) {
-      ConsoleLog.Log('<span style="color: #ff4f23;">All finished.</span>', 4);
+      ConsoleLog.Log(
+        '<span style="color: #ff4f23;">' +
+          GrepoBotUpdated.t(
+            "console.autoattack.all_finished",
+            "All finished.",
+          ) +
+          "</span>",
+        4,
+      );
       Autoattack["stop"]();
     }
   },
@@ -419,7 +430,9 @@ Autoattack = {
         '</div><div class="game_border_corner corner2">' +
         '</div><div class="game_border_corner corner3">' +
         '</div><div class="game_border_corner corner4">' +
-        '</div><div class="game_header bold" id="settings_header">AutoAttack</div>' +
+        '</div><div class="game_header bold" id="settings_header">' +
+        GrepoBotUpdated.t("autoattack.title", "AutoAttack") +
+        "</div>" +
         "<div>" +
         '<div class="attacks_list">' +
         '<ul class="attacks_list">' +

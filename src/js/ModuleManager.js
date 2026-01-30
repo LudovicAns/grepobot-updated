@@ -117,7 +117,16 @@ ModuleManager = {
       try {
         return fn();
       } catch (err) {
-        ConsoleLog.Log(moduleName + " checkReady failed.", 0);
+        ConsoleLog.Log(
+          GrepoBotUpdated.tFormat(
+            "console.check_ready_failed",
+            {
+              module: moduleName,
+            },
+            "{module} checkReady failed.",
+          ),
+          0,
+        );
         return false;
       }
     };
@@ -190,7 +199,10 @@ ModuleManager = {
       }
     });
     if (nextTimestamp === null && !queueNotEmpty) {
-      ConsoleLog.Log("Nothing is ready yet!", 0);
+      ConsoleLog.Log(
+        GrepoBotUpdated.t("console.nothing_ready", "Nothing is ready yet!"),
+        0,
+      );
       ModuleManager.startTimer(30, function () {
         ModuleManager.start();
       });
@@ -229,7 +241,7 @@ ModuleManager = {
         FormBuilder.timerBoxSmall({
           id: "Autofarm_timer",
           styles: "",
-          text: "Start GrepoBot Updated",
+          text: GrepoBotUpdated.t("timer.start", "Start GrepoBot Updated"),
         }),
       )
       .show();
@@ -327,7 +339,16 @@ ModuleManager = {
           new MousePopup("Start " + moduleName),
         );
         HumanMessage["success"](moduleName + " is deactivated.");
-        ConsoleLog.Log(moduleName + " is deactivated.", 0);
+        ConsoleLog.Log(
+          GrepoBotUpdated.tFormat(
+            "console.module_deactivated",
+            {
+              module: moduleName,
+            },
+            "{module} is deactivated.",
+          ),
+          0,
+        );
         if (moduleName == "Autofarm") {
           Autofarm["stop"]();
         } else {
@@ -347,7 +368,16 @@ ModuleManager = {
         if (ModuleManager["modules"][moduleName]["isOn"] == false) {
           toggleEl["addClass"]("on");
           HumanMessage["success"](moduleName + " is activated.");
-          ConsoleLog.Log(moduleName + " is activated.", 0);
+          ConsoleLog.Log(
+            GrepoBotUpdated.tFormat(
+              "console.module_activated",
+              {
+                module: moduleName,
+              },
+              "{module} is activated.",
+            ),
+            0,
+          );
           toggleEl["find"]("span")["mousePopup"](
             new MousePopup("Stop " + moduleName),
           );

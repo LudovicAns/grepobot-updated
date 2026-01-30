@@ -12,7 +12,10 @@ Autoculture = {
   interval: null,
   isStopped: false,
   init: function () {
-    ConsoleLog.Log("Initialize Autoculture", 2);
+    ConsoleLog.Log(
+      GrepoBotUpdated.t("console.init.autoculture", "Initialize Autoculture"),
+      2,
+    );
     Autoculture["initButton"]();
   },
   initButton: function () {
@@ -98,7 +101,16 @@ Autoculture = {
     Autoculture["town"] = town;
     Autoculture["iTown"] = ITowns["towns"][Autoculture["town"]["id"]];
     if (ModuleManager["currentTown"] != Autoculture["town"]["key"]) {
-      ConsoleLog.Log(Autoculture["town"]["name"] + " move to town.", 2);
+      ConsoleLog.Log(
+        GrepoBotUpdated.tFormat(
+          "console.town.move",
+          {
+            town: Autoculture["town"]["name"],
+          },
+          "{town} move to town.",
+        ),
+        2,
+      );
       DataExchanger["switch_town"](Autoculture["town"]["id"], function () {
         if (!Autoculture["checkEnabled"]()) {
           return false;
@@ -121,7 +133,13 @@ Autoculture = {
           undefined
         ) {
           ConsoleLog.Log(
-            Autoculture["town"]["name"] + " getting event information.",
+            GrepoBotUpdated.tFormat(
+              "console.autoculture.getting_event_info",
+              {
+                town: Autoculture["town"]["name"],
+              },
+              "{town} getting event information.",
+            ),
             2,
           );
           DataExchanger["building_place"](
@@ -153,7 +171,13 @@ Autoculture = {
                 if (celebrationIndex == 3) {
                   if (!startedAny) {
                     ConsoleLog.Log(
-                      Autoculture["town"]["name"] + " not ready yet.",
+                      GrepoBotUpdated.tFormat(
+                        "console.town.not_ready",
+                        {
+                          town: Autoculture["town"]["name"],
+                        },
+                        "{town} not ready yet.",
+                      ),
                       2,
                     );
                   }
@@ -313,10 +337,16 @@ Autoculture = {
           if (celebrationData["Celebration"] != undefined) {
             ConsoleLog.Log(
               '<span style="color: #fff;">' +
-                Autoculture["getCelebrationText"](
-                  celebrationData["Celebration"]["celebration_type"],
+                GrepoBotUpdated.tFormat(
+                  "console.autoculture.celebration_started",
+                  {
+                    celebration: Autoculture["getCelebrationText"](
+                      celebrationData["Celebration"]["celebration_type"],
+                    ),
+                  },
+                  "{celebration} is started.",
                 ) +
-                " is started.</span>",
+                "</span>",
               2,
             );
             delaySeconds =
@@ -364,11 +394,31 @@ Autoculture = {
     return labels[key] || key;
   },
   contentSettings: function () {
+    var labels = {
+      island: GrepoBotUpdated.t("autoculture.header.island", "Island"),
+      points: GrepoBotUpdated.t("autoculture.points_suffix", "Pts."),
+      title: GrepoBotUpdated.t("autoculture.title", "AutoCulture"),
+      autostart: GrepoBotUpdated.t(
+        "autoculture.autostart",
+        "AutoStart AutoCulture.",
+      ),
+      autoPrefix: function (celebration) {
+        return GrepoBotUpdated.tFormat(
+          "autoculture.auto_prefix",
+          {
+            celebration: celebration,
+          },
+          "Auto {celebration}",
+        );
+      },
+    };
     var html = '<ul class="game_list" id="townsoverview"><li class="even">';
     html +=
       '<div class="towninfo small tag_header col w80 h25" id="header_town"></div>';
     html +=
-      '<div class="towninfo small tag_header col w40" id="header_island"> Island</div>';
+      '<div class="towninfo small tag_header col w40" id="header_island"> ' +
+      labels.island +
+      "</div>";
     html +=
       '<div class="towninfo small tag_header col w35" id="header_wood"><div class="col header wood"></div></div>';
     html +=
@@ -408,7 +458,8 @@ Autoculture = {
         '" class="gp_town_link">' +
         iTown["name"] +
         "</a></span><br>";
-      html += "<span>(" + iTown["getPoints"]() + " Ptn.)</span>";
+      html +=
+        "<span>(" + iTown["getPoints"]() + " " + labels.points + ")</span>";
       html += "</div></div>";
       html += '<div class="towninfo small townsoverview col w40">';
       html += "<div>";
@@ -504,21 +555,27 @@ Autoculture = {
     var content = $(html);
     content["find"](".celebration.party")
       ["mousePopup"](
-        new MousePopup("Auto " + Autoculture["getCelebrationText"]("party")),
+        new MousePopup(
+          labels.autoPrefix(Autoculture["getCelebrationText"]("party")),
+        ),
       )
       ["on"]("click", function () {
         toggleRow(".culture_party_row");
       });
     content["find"](".celebration.triumph")
       ["mousePopup"](
-        new MousePopup("Auto " + Autoculture["getCelebrationText"]("triumph")),
+        new MousePopup(
+          labels.autoPrefix(Autoculture["getCelebrationText"]("triumph")),
+        ),
       )
       ["on"]("click", function () {
         toggleRow(".culture_triumph_row");
       });
     content["find"](".celebration.theater")
       ["mousePopup"](
-        new MousePopup("Auto " + Autoculture["getCelebrationText"]("theater")),
+        new MousePopup(
+          labels.autoPrefix(Autoculture["getCelebrationText"]("theater")),
+        ),
       )
       ["on"]("click", function () {
         toggleRow(".culture_theater_row");
@@ -596,20 +653,28 @@ Autoculture = {
           Autoculture["settings"]["autostart"] = $("#autoculture_autostart")[
             "prop"
           ]("checked");
-          ConsoleLog.Log("Settings saved", 2);
-          HumanMessage["success"]("The settings were saved!");
+          ConsoleLog.Log(
+            GrepoBotUpdated.t("console.settings_saved", "Settings saved"),
+            2,
+          );
+          HumanMessage["success"](
+            GrepoBotUpdated.t(
+              "ui.settings_saved",
+              "The settings were saved!",
+            ),
+          );
         }),
       )
       ["append"](
         FormBuilder["checkbox"]({
-          text: "AutoStart AutoCulture.",
+          text: labels.autostart,
           id: "autoculture_autostart",
           name: "autoculture_autostart",
           checked: Autoculture["settings"]["autostart"],
         }),
       );
     return FormBuilder["gameWrapper"](
-      "AutoCulture",
+      labels.title,
       "bot_townsoverview",
       content,
       "margin-bottom:9px;",

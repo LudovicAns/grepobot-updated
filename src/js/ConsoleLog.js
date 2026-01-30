@@ -4,14 +4,24 @@
  */
 ConsoleLog = {
   Logs: [],
-  Types: ["GrepoBot Updated", "Farming", "Culture", "Builder", "Attack "],
+  Types: [
+    GrepoBotUpdated.t("console.type.bot", "GrepoBot Updated"),
+    GrepoBotUpdated.t("console.type.farm", "Farming"),
+    GrepoBotUpdated.t("console.type.culture", "Culture"),
+    GrepoBotUpdated.t("console.type.build", "Builder"),
+    GrepoBotUpdated.t("console.type.attack", "Attack"),
+  ],
   scrollInterval: "",
   scrollUpdate: true,
   contentConsole: function () {
     var consoleFieldset = $("<fieldset/>", {
       style: "float:left; width:calc(100% - 10px); box-sizing:border-box;",
     })
-      ["append"]($("<legend/>")["html"]("GrepoBot Updated Console"))
+      ["append"](
+        $("<legend/>")["html"](
+          GrepoBotUpdated.t("console.title", "GrepoBot Updated Console"),
+        ),
+      )
       ["append"](
         $("<div/>", {
           class: "terminal",

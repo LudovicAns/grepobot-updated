@@ -113,7 +113,13 @@ Autofarm = {
       Autofarm["interval"] = setTimeout(
         function () {
           ConsoleLog.Log(
-            Autofarm["town"]["name"] + " getting farm information.",
+            GrepoBotUpdated.tFormat(
+              "console.autofarm.getting_farm_info",
+              {
+                town: Autofarm["town"]["name"],
+              },
+              "{town} getting farm information.",
+            ),
             1,
           );
           if (!Autofarm["isCaptain"]) {
@@ -139,7 +145,16 @@ Autofarm = {
     if (ModuleManager["currentTown"] != Autofarm["town"]["key"]) {
       Autofarm["interval"] = setTimeout(
         function () {
-          ConsoleLog.Log(Autofarm["town"]["name"] + " move to town.", 1);
+          ConsoleLog.Log(
+            GrepoBotUpdated.tFormat(
+              "console.town.move",
+              {
+                town: Autofarm["town"]["name"],
+              },
+              "{town} move to town.",
+            ),
+            1,
+          );
           if (!Autofarm["checkEnabled"]()) {
             return false;
           }
@@ -220,7 +235,16 @@ Autofarm = {
   },
   claimResources: function () {
     if (!Autofarm["town"]["farmTowns"][0]) {
-      ConsoleLog.Log(Autofarm["town"]["name"] + " has no farm towns.", 1);
+      ConsoleLog.Log(
+        GrepoBotUpdated.tFormat(
+          "console.autofarm.no_farm_towns",
+          {
+            town: Autofarm["town"]["name"],
+          },
+          "{town} has no farm towns.",
+        ),
+        1,
+      );
       Autofarm["finished"](1800);
       return false;
     }
@@ -310,7 +334,16 @@ Autofarm = {
           }
         });
       } else {
-        ConsoleLog.Log(Autofarm["town"]["name"] + " not ready yet.", 1);
+        ConsoleLog.Log(
+          GrepoBotUpdated.tFormat(
+            "console.town.not_ready",
+            {
+              town: Autofarm["town"]["name"],
+            },
+            "{town} not ready yet.",
+          ),
+          1,
+        );
       }
       Autofarm["finished"](nextLootTime);
     }
@@ -476,7 +509,10 @@ Autofarm = {
     clearInterval(Autofarm["interval"]);
   },
   init: function () {
-    ConsoleLog.Log("Initialize AutoFarm", 1);
+    ConsoleLog.Log(
+      GrepoBotUpdated.t("console.init.autofarm", "Initialize AutoFarm"),
+      1,
+    );
     Autofarm["initButton"]();
     Autofarm["checkCaptain"]();
     Autofarm.loadSettings();
@@ -504,10 +540,17 @@ Autofarm = {
       style:
         "float:left; width:calc(100% - 10px); height: 270px; box-sizing:border-box;",
     })
-      ["append"]($("<legend/>")["html"](Autofarm["title"]))
+      ["append"](
+        $("<legend/>")["html"](
+          GrepoBotUpdated.t("autofarm.title", Autofarm["title"]),
+        ),
+      )
       ["append"](
         FormBuilder["checkbox"]({
-          text: "AutoStart AutoFarm.",
+          text: GrepoBotUpdated.t(
+            "autofarm.autostart",
+            "AutoStart AutoFarm.",
+          ),
           id: "autofarm_autostart",
           name: "autofarm_autostart",
           checked: Autofarm["settings"]["autostart"],
@@ -518,25 +561,37 @@ Autofarm = {
         var selectConfig = {
           id: "autofarm_method",
           name: "autofarm_method",
-          label: "Farm method: ",
+          label: GrepoBotUpdated.t("autofarm.method_label", "Farm method: "),
           styles: "width: 120px;",
           value: Autofarm["settings"]["method"],
           options: [
             {
               value: "300",
-              name: "5 minute farm",
+              name: GrepoBotUpdated.t(
+                "autofarm.method.5",
+                "5 minute farm",
+              ),
             },
             {
               value: "1200",
-              name: "20 minute farm",
+              name: GrepoBotUpdated.t(
+                "autofarm.method.20",
+                "20 minute farm",
+              ),
             },
             {
               value: "5400",
-              name: "90 minute farm",
+              name: GrepoBotUpdated.t(
+                "autofarm.method.90",
+                "90 minute farm",
+              ),
             },
             {
               value: "14400",
-              name: "240 minute farm",
+              name: GrepoBotUpdated.t(
+                "autofarm.method.240",
+                "240 minute farm",
+              ),
             },
           ],
           disabled: false,
@@ -548,7 +603,14 @@ Autofarm = {
         }
         var selectBox = FormBuilder["selectBox"](selectConfig);
         if (!Autofarm["hasP"]) {
-          selectBox["mousePopup"](new MousePopup("Premium required"));
+          selectBox["mousePopup"](
+            new MousePopup(
+              GrepoBotUpdated.t(
+                "autofarm.premium_required",
+                "Premium required",
+              ),
+            ),
+          );
         }
         return selectBox;
       })
@@ -556,29 +618,47 @@ Autofarm = {
         var selectConfig = {
           id: "autofarm_bewteen",
           name: "autofarm_bewteen",
-          label: "Time before next farm: ",
+          label: GrepoBotUpdated.t(
+            "autofarm.time_between",
+            "Time before next farm: ",
+          ),
           styles: "width: 120px;",
           value: Autofarm["settings"]["timebetween"],
           options: [
             {
               value: "1",
-              name: "1-2 seconds",
+              name: GrepoBotUpdated.t(
+                "autofarm.between.1_2",
+                "1-2 seconds",
+              ),
             },
             {
               value: "3",
-              name: "3-4 seconds",
+              name: GrepoBotUpdated.t(
+                "autofarm.between.3_4",
+                "3-4 seconds",
+              ),
             },
             {
               value: "5",
-              name: "5-6 seconds",
+              name: GrepoBotUpdated.t(
+                "autofarm.between.5_6",
+                "5-6 seconds",
+              ),
             },
             {
               value: "7",
-              name: "7-8 seconds",
+              name: GrepoBotUpdated.t(
+                "autofarm.between.7_8",
+                "7-8 seconds",
+              ),
             },
             {
               value: "9",
-              name: "9-10 seconds",
+              name: GrepoBotUpdated.t(
+                "autofarm.between.9_10",
+                "9-10 seconds",
+              ),
             },
           ],
         };
@@ -589,13 +669,23 @@ Autofarm = {
         }
         var selectBox = FormBuilder["selectBox"](selectConfig);
         if (!Autofarm["hasP"]) {
-          selectBox["mousePopup"](new MousePopup("Premium required"));
+          selectBox["mousePopup"](
+            new MousePopup(
+              GrepoBotUpdated.t(
+                "autofarm.premium_required",
+                "Premium required",
+              ),
+            ),
+          );
         }
         return selectBox;
       })
       ["append"](
         FormBuilder["checkbox"]({
-          text: "Skip farm when warehouse is full.",
+          text: GrepoBotUpdated.t(
+            "autofarm.skip_full",
+            "Skip farm when warehouse is full.",
+          ),
           id: "autofarm_warehousefull",
           name: "autofarm_warehousefull",
           checked: Autofarm["settings"]["skipwhenfull"],
@@ -604,7 +694,10 @@ Autofarm = {
       )
       ["append"](
         FormBuilder["checkbox"]({
-          text: "Lowest resources first with more towns on one island.",
+          text: GrepoBotUpdated.t(
+            "autofarm.low_res_first",
+            "Lowest resources first with more towns on one island.",
+          ),
           id: "autofarm_lowresfirst",
           name: "autofarm_lowresfirst",
           checked: Autofarm["settings"]["lowresfirst"],
@@ -613,7 +706,10 @@ Autofarm = {
       )
       ["append"](
         FormBuilder["checkbox"]({
-          text: "Stop loot farm until mood is below 80%.",
+          text: GrepoBotUpdated.t(
+            "autofarm.stop_loot_below",
+            "Stop loot farm until mood is below 80%.",
+          ),
           id: "autofarm_loot",
           name: "autofarm_loot",
           checked: Autofarm["settings"]["stoplootbelow"],
@@ -650,8 +746,16 @@ Autofarm = {
             JSON.stringify(Autofarm.settings),
           );
 
-          ConsoleLog.Log("Settings saved", 1);
-          HumanMessage["success"]("The settings were saved!");
+          ConsoleLog.Log(
+            GrepoBotUpdated.t("console.settings_saved", "Settings saved"),
+            1,
+          );
+          HumanMessage["success"](
+            GrepoBotUpdated.t(
+              "ui.settings_saved",
+              "The settings were saved!",
+            ),
+          );
         }),
       );
   },

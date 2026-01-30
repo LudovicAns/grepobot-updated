@@ -26,6 +26,58 @@ var GrepoBotUpdated = {
     width: 600,
     height: 400,
   },
+  locales: {},
+  currentLocale: null,
+  getLocaleKey: function () {
+    var raw =
+      (Game && Game.locale_lang) ||
+      (Game && Game.locale) ||
+      (navigator && (navigator.language || navigator.userLanguage)) ||
+      "en";
+    var normalized = String(raw).toLowerCase();
+    if (normalized.indexOf("_") !== -1) {
+      normalized = normalized.split("_")[0];
+    }
+    if (normalized.indexOf("-") !== -1) {
+      normalized = normalized.split("-")[0];
+    }
+    return normalized || "en";
+  },
+  initI18n: function () {
+    GrepoBotUpdated.currentLocale = GrepoBotUpdated.getLocaleKey();
+  },
+  t: function (key, fallback) {
+    var locale = GrepoBotUpdated.currentLocale || GrepoBotUpdated.getLocaleKey();
+    var locales = GrepoBotUpdated.locales || {};
+    var value =
+      locales[locale] &&
+      Object.prototype.hasOwnProperty.call(locales[locale], key)
+        ? locales[locale][key]
+        : undefined;
+    if (value === undefined && locales.en) {
+      value = locales.en[key];
+    }
+    if (value === undefined) {
+      return fallback !== undefined ? fallback : key;
+    }
+    return value;
+  },
+  format: function (template, tokens) {
+    if (!template) {
+      return "";
+    }
+    return template.replace(/\{(\w+)\}/g, function (match, key) {
+      return Object.prototype.hasOwnProperty.call(tokens, key)
+        ? tokens[key]
+        : match;
+    });
+  },
+  tFormat: function (key, tokens, fallback) {
+    return GrepoBotUpdated.format(
+      GrepoBotUpdated.t(key, fallback),
+      tokens || {},
+    );
+  },
   getMenuWindowSize: function () {
     var defaults = GrepoBotUpdated.menuWindowDefaults;
     var raw = localStorage.getItem("GrepoBotUpdated.MenuWindowSize");
@@ -138,7 +190,14 @@ var GrepoBotUpdated = {
     GrepoBotUpdated.applyMenuWrapperOffset();
   },
   init: function () {
-    ConsoleLog.Log("Initialize GrepoBot Updated", 0);
+    ConsoleLog.Log(
+      GrepoBotUpdated.t(
+        "console.init.bot",
+        "Initialize GrepoBot Updated",
+      ),
+      0,
+    );
+    GrepoBotUpdated.initI18n();
     GrepoBotUpdated.loadModules();
     GrepoBotUpdated.initAjax();
     GrepoBotUpdated.initMapTownFeature();
@@ -188,39 +247,73 @@ var GrepoBotUpdated = {
         $("<ul/>", {
           "\x63\x6C\x61\x73\x73": "menu_inner",
         })
-          ["prepend"](GrepoBotUpdated["addMenuItem"]("AUTHORIZE", "Account", "Account"))
           ["prepend"](
-            GrepoBotUpdated["addMenuItem"]("CONSOLE", "Assistant", "Assistant"),
+            GrepoBotUpdated["addMenuItem"](
+              "AUTHORIZE",
+              GrepoBotUpdated.t("menu.account", "Account"),
+              "Account",
+            ),
           )
           ["prepend"](
-            GrepoBotUpdated["addMenuItem"]("ASSISTANT", "Console", "Console"),
+            GrepoBotUpdated["addMenuItem"](
+              "CONSOLE",
+              GrepoBotUpdated.t("menu.assistant", "Assistant"),
+              "Assistant",
+            ),
+          )
+          ["prepend"](
+            GrepoBotUpdated["addMenuItem"](
+              "ASSISTANT",
+              GrepoBotUpdated.t("menu.console", "Console"),
+              "Console",
+            ),
           ) /*['prepend'](GrepoBotUpdated['addMenuItem']('SUPPORT', 'Support', 'Support'))*/,
       ),
     );
     if (typeof Autoattack !== "undefined") {
       botWindow["find"](".menu_inner li:last-child")["before"](
-        GrepoBotUpdated["addMenuItem"]("ATTACKMODULE", "Attack", "Autoattack"),
+        GrepoBotUpdated["addMenuItem"](
+          "ATTACKMODULE",
+          GrepoBotUpdated.t("menu.attack", "Attack"),
+          "Autoattack",
+        ),
       );
     }
     if (typeof Autobuild !== "undefined") {
       botWindow["find"](".menu_inner li:last-child")["before"](
-        GrepoBotUpdated["addMenuItem"]("CONSTRUCTMODULE", "Build", "Autobuild"),
+        GrepoBotUpdated["addMenuItem"](
+          "CONSTRUCTMODULE",
+          GrepoBotUpdated.t("menu.build", "Build"),
+          "Autobuild",
+        ),
       );
     }
     if (typeof Autoculture !== "undefined") {
       botWindow["find"](".menu_inner li:last-child")["before"](
-        GrepoBotUpdated["addMenuItem"]("CULTUREMODULE", "Culture", "Autoculture"),
+        GrepoBotUpdated["addMenuItem"](
+          "CULTUREMODULE",
+          GrepoBotUpdated.t("menu.culture", "Culture"),
+          "Autoculture",
+        ),
       );
     }
     if (typeof Autofarm !== "undefined") {
       botWindow["find"](".menu_inner li:last-child")["before"](
-        GrepoBotUpdated["addMenuItem"]("FARMMODULE", "Farm", "Autofarm"),
+        GrepoBotUpdated["addMenuItem"](
+          "FARMMODULE",
+          GrepoBotUpdated.t("menu.farm", "Farm"),
+          "Autofarm",
+        ),
       );
     }
     var authorizeItem = botWindow["find"]("#GrepoBotUpdated-AUTHORIZE");
     if (authorizeItem["length"]) {
       authorizeItem["closest"]("li")["before"](
-        GrepoBotUpdated["addMenuItem"]("UI", "UI", "UI"),
+        GrepoBotUpdated["addMenuItem"](
+          "UI",
+          GrepoBotUpdated.t("menu.ui", "UI"),
+          "UI",
+        ),
       );
     }
     GrepoBotUpdated.applyMenuWrapperOffset();
@@ -292,11 +385,11 @@ var GrepoBotUpdated = {
    */
   contentAccount: function () {
     var _rows = {
-      "Name:": Game.player_name,
-      "World:": Game.world_id,
-      "Rank:": Game.player_rank,
-      "Towns:": Game.player_villages,
-      "Language:": Game.locale_lang,
+      [GrepoBotUpdated.t("account.name", "Name:")]: Game.player_name,
+      [GrepoBotUpdated.t("account.world", "World:")]: Game.world_id,
+      [GrepoBotUpdated.t("account.rank", "Rank:")]: Game.player_rank,
+      [GrepoBotUpdated.t("account.towns", "Towns:")]: Game.player_villages,
+      [GrepoBotUpdated.t("account.language", "Language:")]: Game.locale_lang,
     };
     var _table = $("<table/>", {
       class: "game_table layout_main_sprite",
@@ -322,7 +415,7 @@ var GrepoBotUpdated = {
       return _tbody;
     });
     return FormBuilder.gameWrapper(
-      "Account",
+      GrepoBotUpdated.t("account.title", "Account"),
       "account_property_wrapper",
       _table,
       "margin-bottom:9px;",
@@ -337,7 +430,7 @@ var GrepoBotUpdated = {
     })
       ["append"](
         FormBuilder["input"]({
-          name: "Menu left (px)",
+          name: GrepoBotUpdated.t("ui.menu_left", "Menu left (px)"),
           id: "grepobot_ui_menu_left",
           type: "text",
           value: offset.left,
@@ -347,7 +440,7 @@ var GrepoBotUpdated = {
       )
       ["append"](
         FormBuilder["input"]({
-          name: "Menu top (px)",
+          name: GrepoBotUpdated.t("ui.menu_top", "Menu top (px)"),
           id: "grepobot_ui_menu_top",
           type: "text",
           value: offset.top,
@@ -357,7 +450,7 @@ var GrepoBotUpdated = {
       )
       ["append"](
         FormBuilder["input"]({
-          name: "Window width (px)",
+          name: GrepoBotUpdated.t("ui.window_width", "Window width (px)"),
           id: "grepobot_ui_window_width",
           type: "text",
           value: size.width,
@@ -367,7 +460,7 @@ var GrepoBotUpdated = {
       )
       ["append"](
         FormBuilder["input"]({
-          name: "Window height (px)",
+          name: GrepoBotUpdated.t("ui.window_height", "Window height (px)"),
           id: "grepobot_ui_window_height",
           type: "text",
           value: size.height,
@@ -377,7 +470,7 @@ var GrepoBotUpdated = {
       )
       ["append"](
         FormBuilder["button"]({
-          name: "Apply",
+          name: GrepoBotUpdated.t("ui.apply", "Apply"),
           style: "margin-right: 6px;",
         })["on"]("click", function (event) {
           event["preventDefault"]();
@@ -403,7 +496,7 @@ var GrepoBotUpdated = {
       )
       ["append"](
         FormBuilder["button"]({
-          name: "Reset",
+          name: GrepoBotUpdated.t("ui.reset", "Reset"),
         })["on"]("click", function (event) {
           event["preventDefault"]();
           $("#grepobot_ui_menu_left").val(
@@ -434,7 +527,7 @@ var GrepoBotUpdated = {
         }),
       );
     return FormBuilder.gameWrapper(
-      "UI",
+      GrepoBotUpdated.t("ui.title", "UI"),
       "grepobot_ui_wrapper",
       form,
       "margin-bottom:9px;",
@@ -734,7 +827,21 @@ var GrepoBotUpdated = {
         GrepoBotUpdated["initWindow"]();
         GrepoBotUpdated["initMapTownFeature"]();
 
+        var localeKey = GrepoBotUpdated.getLocaleKey();
+        var supportedLocales = {
+          en: true,
+          fr: true,
+        };
+        var localeScript = supportedLocales[localeKey]
+          ? GrepoBotUpdated["domain"] + "I18n." + localeKey + ".js"
+          : null;
         $["when"](
+          $["getScript"](GrepoBotUpdated["domain"] + "I18n.en.js"),
+          localeScript && localeKey !== "en"
+            ? $["getScript"](localeScript)
+            : $.Deferred(function (deferred) {
+                $(deferred["resolve"]);
+              }),
           $["getScript"](GrepoBotUpdated["domain"] + "DataExchanger.js"),
           $["getScript"](GrepoBotUpdated["domain"] + "ConsoleLog.js"),
           $["getScript"](GrepoBotUpdated["domain"] + "FormBuilder.js"),

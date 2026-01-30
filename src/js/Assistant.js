@@ -10,7 +10,10 @@ Assistant = {
     auto_relogin: 0,
   },
   init: function () {
-    ConsoleLog.Log("Initialize Assistant", 0);
+    ConsoleLog.Log(
+      GrepoBotUpdated.t("console.init.assistant", "Initialize Assistant"),
+      0,
+    );
     Assistant.loadSettings();
     Assistant.initSettings();
   },
@@ -57,10 +60,17 @@ Assistant = {
       "\x73\x74\x79\x6C\x65":
         "float:left; width:calc(100% - 10px); height: 270px; box-sizing:border-box;",
     })
-      ["append"]($("<legend/>")["html"]("Assistant Settings"))
+      ["append"](
+        $("<legend/>")["html"](
+          GrepoBotUpdated.t("assistant.title", "Assistant Settings"),
+        ),
+      )
       ["append"](
         FormBuilder["checkbox"]({
-          "\x74\x65\x78\x74": "Show town names on island view.",
+          "\x74\x65\x78\x74": GrepoBotUpdated.t(
+            "assistant.show_town_names",
+            "Show town names on island view.",
+          ),
           "\x69\x64": "assistant_town_names",
           "\x6E\x61\x6D\x65": "assistant_town_names",
           "\x63\x68\x65\x63\x6B\x65\x64": Assistant["settings"]["town_names"],
@@ -68,7 +78,10 @@ Assistant = {
       )
       ["append"](
         FormBuilder["checkbox"]({
-          "\x74\x65\x78\x74": "Show player names on island view.",
+          "\x74\x65\x78\x74": GrepoBotUpdated.t(
+            "assistant.show_player_names",
+            "Show player names on island view.",
+          ),
           "\x69\x64": "assistant_player_names",
           "\x6E\x61\x6D\x65": "assistant_player_names",
           "\x63\x68\x65\x63\x6B\x65\x64": Assistant["settings"]["player_name"],
@@ -76,7 +89,10 @@ Assistant = {
       )
       ["append"](
         FormBuilder["checkbox"]({
-          "\x74\x65\x78\x74": "Show alliance names on island view.",
+          "\x74\x65\x78\x74": GrepoBotUpdated.t(
+            "assistant.show_alliance_names",
+            "Show alliance names on island view.",
+          ),
           "\x69\x64": "assistant_alliance_names",
           "\x6E\x61\x6D\x65": "assistant_alliance_names",
           "\x63\x68\x65\x63\x6B\x65\x64":
@@ -87,29 +103,47 @@ Assistant = {
         FormBuilder["selectBox"]({
           id: "assistant_auto_relogin",
           name: "assistant_auto_relogin",
-          label: "Auto re-login: ",
+          label: GrepoBotUpdated.t(
+            "assistant.auto_relogin",
+            "Auto re-login: ",
+          ),
           styles: "width: 120px;",
           value: Assistant["settings"]["auto_relogin"],
           options: [
             {
               value: "0",
-              name: "Disabled",
+              name: GrepoBotUpdated.t(
+                "assistant.auto_relogin.disabled",
+                "Disabled",
+              ),
             },
             {
               value: "120",
-              name: "After 2 minutes",
+              name: GrepoBotUpdated.t(
+                "assistant.auto_relogin.after_2",
+                "After 2 minutes",
+              ),
             },
             {
               value: "300",
-              name: "After 5 minutes",
+              name: GrepoBotUpdated.t(
+                "assistant.auto_relogin.after_5",
+                "After 5 minutes",
+              ),
             },
             {
               value: "600",
-              name: "After 10 minutes",
+              name: GrepoBotUpdated.t(
+                "assistant.auto_relogin.after_10",
+                "After 10 minutes",
+              ),
             },
             {
               value: "900",
-              name: "After 15 minutes",
+              name: GrepoBotUpdated.t(
+                "assistant.auto_relogin.after_15",
+                "After 15 minutes",
+              ),
             },
           ],
         }),
@@ -130,7 +164,12 @@ Assistant = {
             formData["assistant_auto_relogin"],
           );
           Assistant.saveSettings();
-          HumanMessage.success("The settings were saved!");
+          HumanMessage.success(
+            GrepoBotUpdated.t(
+              "ui.settings_saved",
+              "The settings were saved!",
+            ),
+          );
           Assistant.initSettings();
         }),
       );

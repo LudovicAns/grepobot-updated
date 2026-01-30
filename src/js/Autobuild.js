@@ -28,7 +28,10 @@ Autobuild = {
    * Initilize Autobuild
    */
   init: function () {
-    ConsoleLog.Log("Initialize Autobuild", 3);
+    ConsoleLog.Log(
+      GrepoBotUpdated.t("console.init.autobuild", "Initialize Autobuild"),
+      3,
+    );
     Autobuild.initFunction();
     Autobuild.initButton();
     Autobuild.checkCaptain();
@@ -429,7 +432,16 @@ Autobuild = {
     Autobuild.town = _town;
     Autobuild.iTown = ITowns.towns[Autobuild.town.id];
     if (ModuleManager.currentTown != Autobuild.town.key) {
-      ConsoleLog.Log(Autobuild.town.name + " move to town.", 3);
+      ConsoleLog.Log(
+        GrepoBotUpdated.tFormat(
+          "console.town.move",
+          {
+            town: Autobuild.town.name,
+          },
+          "{town} move to town.",
+        ),
+        3,
+      );
       ModuleManager.currentTown = Autobuild.town.key;
     }
     /*DataExchanger.switch_town(Autobuild.town.id, function () {
@@ -576,7 +588,13 @@ Autobuild = {
         Autobuild.interval = setTimeout(
           function () {
             ConsoleLog.Log(
-              Autobuild.town.name + " getting building information.",
+              GrepoBotUpdated.tFormat(
+                "console.autobuild.getting_building_info",
+                {
+                  town: Autobuild.town.name,
+                },
+                "{town} getting building information.",
+              ),
               3,
             );
             DataExchanger.building_main(
@@ -640,29 +658,41 @@ Autobuild = {
                   } else {
                     if (!_building_from_resp.enough_population) {
                       ConsoleLog.Log(
-                        Autobuild.town.name +
-                          " not enough population for " +
-                          _firstBuilding.item_name +
-                          ".",
+                        GrepoBotUpdated.tFormat(
+                          "console.autobuild.not_enough_population",
+                          {
+                            town: Autobuild.town.name,
+                            building: _firstBuilding.item_name,
+                          },
+                          "{town} not enough population for {building}.",
+                        ),
                         3,
                       );
                       Autobuild.finished();
                     } else {
                       if (!_building_from_resp.enough_resources) {
                         ConsoleLog.Log(
-                          Autobuild.town.name +
-                            " not enough resources for " +
-                            _firstBuilding.item_name +
-                            ".",
+                          GrepoBotUpdated.tFormat(
+                            "console.autobuild.not_enough_resources",
+                            {
+                              town: Autobuild.town.name,
+                              building: _firstBuilding.item_name,
+                            },
+                            "{town} not enough resources for {building}.",
+                          ),
                           3,
                         );
                         Autobuild.finished();
                       } else {
                         ConsoleLog.Log(
-                          Autobuild.town.name +
-                            " " +
-                            _firstBuilding.item_name +
-                            " can not be started due dependencies.",
+                          GrepoBotUpdated.tFormat(
+                            "console.autobuild.dependencies_block",
+                            {
+                              town: Autobuild.town.name,
+                              building: _firstBuilding.item_name,
+                            },
+                            "{town} {building} can not be started due dependencies.",
+                          ),
                           3,
                         );
 
@@ -679,7 +709,13 @@ Autobuild = {
                   }
                 } else {
                   ConsoleLog.Log(
-                    Autobuild.town.name + " no free building slots available.",
+                    GrepoBotUpdated.tFormat(
+                      "console.autobuild.no_free_slots",
+                      {
+                        town: Autobuild.town.name,
+                      },
+                      "{town} no free building slots available.",
+                    ),
                     3,
                   );
                   Autobuild.finished();
@@ -750,11 +786,18 @@ Autobuild = {
                     ConsoleLog.Log(
                       '<span style="color: ' +
                         (_queue == "unit" ? "#ffe03d" : "#3dadff") +
-                        ';">Units - ' +
-                        _firstQueueItem.count +
-                        " " +
-                        GameData.units[_firstQueueItem.item_name].name_plural +
-                        " added.</span>",
+                        ';">' +
+                        GrepoBotUpdated.tFormat(
+                          "console.autobuild.units_added",
+                          {
+                            count: _firstQueueItem.count,
+                            unit:
+                              GameData.units[_firstQueueItem.item_name]
+                                .name_plural,
+                          },
+                          "Units - {count} {unit} added.",
+                        ) +
+                        "</span>",
                       3,
                     );
 
@@ -775,12 +818,16 @@ Autobuild = {
           );
         } else {
           ConsoleLog.Log(
-            Autobuild.town.name +
-              " recruiting " +
-              _firstQueueItem.count +
-              " " +
-              GameData.units[_firstQueueItem.item_name].name_plural +
-              " not ready.",
+            GrepoBotUpdated.tFormat(
+              "console.autobuild.recruiting_not_ready",
+              {
+                town: Autobuild.town.name,
+                count: _firstQueueItem.count,
+                unit:
+                  GameData.units[_firstQueueItem.item_name].name_plural,
+              },
+              "{town} recruiting {count} {unit} not ready.",
+            ),
             3,
           );
           Autobuild.finished();
@@ -1638,10 +1685,17 @@ Autobuild = {
       style:
         "float:left; width:calc(100% - 10px); min-height: 270px; box-sizing:border-box;",
     })
-      .append($("<legend/>").html("Autobuild Settings"))
+      .append(
+        $("<legend/>").html(
+          GrepoBotUpdated.t("autobuild.title", "Autobuild Settings"),
+        ),
+      )
       .append(
         FormBuilder.checkbox({
-          text: "AutoStart Autobuild.",
+          text: GrepoBotUpdated.t(
+            "autobuild.autostart",
+            "AutoStart Autobuild.",
+          ),
           id: "autobuild_autostart",
           name: "autobuild_autostart",
           checked: Autobuild.settings.autostart,
@@ -1651,32 +1705,47 @@ Autobuild = {
         FormBuilder.selectBox({
           id: "autobuild_timeinterval",
           name: "autobuild_timeinterval",
-          label: "Check every: ",
+          label: GrepoBotUpdated.t("autobuild.check_every", "Check every: "),
           styles: "width: 120px;",
           value: Autobuild.settings.timeinterval,
           options: [
             {
               value: "120",
-              name: "2 minutes",
+              name: GrepoBotUpdated.t(
+                "autobuild.every.2",
+                "2 minutes",
+              ),
             },
             {
               value: "300",
-              name: "5 minutes",
+              name: GrepoBotUpdated.t(
+                "autobuild.every.5",
+                "5 minutes",
+              ),
             },
             {
               value: "600",
-              name: "10 minutes",
+              name: GrepoBotUpdated.t(
+                "autobuild.every.10",
+                "10 minutes",
+              ),
             },
             {
               value: "900",
-              name: "15 minutes",
+              name: GrepoBotUpdated.t(
+                "autobuild.every.15",
+                "15 minutes",
+              ),
             },
           ],
         }),
       )
       .append(
         FormBuilder.checkbox({
-          text: "Enable building queue.",
+          text: GrepoBotUpdated.t(
+            "autobuild.enable_building",
+            "Enable building queue.",
+          ),
           id: "autobuild_building_enable",
           name: "autobuild_building_enable",
           style: "width: 100%;padding-top: 35px;",
@@ -1685,7 +1754,10 @@ Autobuild = {
       )
       .append(
         FormBuilder.checkbox({
-          text: "Enable barracks queue.",
+          text: GrepoBotUpdated.t(
+            "autobuild.enable_barracks",
+            "Enable barracks queue.",
+          ),
           id: "autobuild_barracks_enable",
           name: "autobuild_barracks_enable",
           style: "width: 100%;",
@@ -1694,7 +1766,10 @@ Autobuild = {
       )
       .append(
         FormBuilder.checkbox({
-          text: "Enable ships queue.",
+          text: GrepoBotUpdated.t(
+            "autobuild.enable_ships",
+            "Enable ships queue.",
+          ),
           id: "autobuild_ships_enable",
           name: "autobuild_ships_enable",
           style: "width: 100%;padding-bottom: 35px;",
@@ -1704,7 +1779,10 @@ Autobuild = {
       .append(function () {
         if (GameDataInstantBuy.isEnabled()) {
           return FormBuilder.checkbox({
-            text: "Free Instant Buy.",
+            text: GrepoBotUpdated.t(
+              "autobuild.instant_buy",
+              "Free Instant Buy.",
+            ),
             id: "autobuild_instant_buy",
             name: "autobuild_instant_buy",
             style: "width: 100%;",
@@ -1740,8 +1818,16 @@ Autobuild = {
             JSON.stringify(Autobuild.settings),
           );
 
-          ConsoleLog.Log("Settings saved", 3);
-          HumanMessage.success("The settings were saved!");
+          ConsoleLog.Log(
+            GrepoBotUpdated.t("console.settings_saved", "Settings saved"),
+            3,
+          );
+          HumanMessage.success(
+            GrepoBotUpdated.t(
+              "ui.settings_saved",
+              "The settings were saved!",
+            ),
+          );
         }),
       );
   },

@@ -13,6 +13,8 @@ CSS_FILE = SRC / "styles" / "GrepoBotUpdated.css"
 IMAGES_DIR = SRC / "assets" / "images"
 
 JS_FILES = [
+    "I18n.en.js",
+    "I18n.fr.js",
     "GrepoBotUpdated.js",
     "ConsoleLog.js",
     "DataExchanger.js",
@@ -87,8 +89,20 @@ def main() -> None:
     userscript.append("};")
     userscript.append(f'const GREPOBOT_CSS_B64 = "{css_b64}";')
     userscript.append("")
-    userscript.append("function grepobotDecode(b64) {")
+    userscript.append("function grepobotDecodeBinary(b64) {")
     userscript.append("  return atob(b64);")
+    userscript.append("}")
+    userscript.append("")
+    userscript.append("function grepobotDecodeUtf8(b64) {")
+    userscript.append("  const binary = atob(b64);")
+    userscript.append("  if (typeof TextDecoder !== \"undefined\") {")
+    userscript.append("    const bytes = new Uint8Array(binary.length);")
+    userscript.append("    for (let i = 0; i < binary.length; i++) {")
+    userscript.append("      bytes[i] = binary.charCodeAt(i);")
+    userscript.append("    }")
+    userscript.append("    return new TextDecoder(\"utf-8\").decode(bytes);")
+    userscript.append("  }")
+    userscript.append("  return decodeURIComponent(escape(binary));")
     userscript.append("}")
     userscript.append("")
     userscript.append("function grepobotInjectScript(code) {")
@@ -103,7 +117,7 @@ def main() -> None:
     userscript.append("  if (!b64) {")
     userscript.append("    throw new Error(\"Missing script in bundle: \" + name);")
     userscript.append("  }")
-    userscript.append("  const code = grepobotDecode(b64);")
+    userscript.append("  const code = grepobotDecodeUtf8(b64);")
     userscript.append("  grepobotInjectScript(code);")
     userscript.append("}")
     userscript.append("")
@@ -113,7 +127,7 @@ def main() -> None:
     userscript.append("  }")
     userscript.append("  const style = document.createElement(\"style\");")
     userscript.append("  style.id = \"grepobot-local-css\";")
-    userscript.append("  style.textContent = grepobotDecode(GREPOBOT_CSS_B64);")
+    userscript.append("  style.textContent = grepobotDecodeBinary(GREPOBOT_CSS_B64);")
     userscript.append("  document.head.appendChild(style);")
     userscript.append("}")
     userscript.append("")
