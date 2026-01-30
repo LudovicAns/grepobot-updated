@@ -19,8 +19,10 @@ Autobuild = {
   currentWindow: null,
   isCaptain: false,
   isCurator: false,
+  isCommander: false,
   Queue: 0,
   buildingQueueMax: 0,
+  unitQueueMax: 0,
 
   /**
    * Initilize Autobuild
@@ -141,9 +143,31 @@ Autobuild = {
       _renderQueue(
         GameViews["ConstructionQueueBaseView"]["prototype"]["renderQueue"],
       );
-    var wrapSelectUnit = function (originalSelectUnit) {
+    var wrapUnitInit = function (originalInit) {
       return function () {
-        originalSelectUnit["apply"](this, arguments);
+        var result = originalInit["apply"](this, arguments);
+        Autobuild.refreshUnitQueueHeader();
+        if (UnitOrder && UnitOrder["callMethod"]) {
+          var wrappedCallMethod = wrapUnitCallMethod(UnitOrder["callMethod"]);
+          if (!wrappedCallMethod.__grepobot_wrapped) {
+            wrappedCallMethod.__grepobot_wrapped = true;
+          }
+          UnitOrder["callMethod"] = wrappedCallMethod;
+        }
+        if (this && this["$el"]) {
+          Autobuild.initUnitOrder(this, Autobuild.getUnitQueueTypeFromDom());
+        }
+        return result;
+      };
+    };
+    var wrapSelectUnit = function (originalSelectUnit) {
+      if (originalSelectUnit && originalSelectUnit.__grepobot_wrapped) {
+        return originalSelectUnit;
+      }
+      return function () {
+        if (typeof originalSelectUnit === "function") {
+          originalSelectUnit["apply"](this, arguments);
+        }
         if (this["barracks"]) {
           Autobuild["initUnitOrder"](this, "unit");
         } else {
@@ -153,7 +177,40 @@ Autobuild = {
         }
       };
     };
-    UnitOrder["selectUnit"] = wrapSelectUnit(UnitOrder["selectUnit"]);
+    var wrapUnitCallMethod = function (originalCallMethod) {
+      if (originalCallMethod && originalCallMethod.__grepobot_wrapped) {
+        return originalCallMethod;
+      }
+      return function (methodName) {
+        if (methodName === "build") {
+          var queueType = Autobuild.getUnitQueueTypeFromDom();
+          var unitData = Autobuild.getSelectedUnitData(this);
+          var count = Autobuild.getSelectedUnitCount();
+          if (
+            unitData &&
+            count > 0 &&
+            Autobuild.isUnitQueueFull(queueType, Game.townId)
+          ) {
+            Autobuild.addUnitQueueItem(unitData, queueType, count);
+            return false;
+          }
+        }
+        return originalCallMethod["apply"](this, arguments);
+      };
+    };
+    if (UnitOrder && UnitOrder["init"]) {
+      UnitOrder["init"] = wrapUnitInit(UnitOrder["init"]);
+    }
+    if (UnitOrder && UnitOrder["callMethod"]) {
+      var wrappedCallMethod = wrapUnitCallMethod(UnitOrder["callMethod"]);
+      wrappedCallMethod.__grepobot_wrapped = true;
+      UnitOrder["callMethod"] = wrappedCallMethod;
+    }
+    if (UnitOrder && UnitOrder["selectUnit"]) {
+      var wrappedSelectUnit = wrapSelectUnit(UnitOrder["selectUnit"]);
+      wrappedSelectUnit.__grepobot_wrapped = true;
+      UnitOrder["selectUnit"] = wrappedSelectUnit;
+    }
   },
   /**
    * Initilize the Buttons for Autobuild
@@ -162,7 +219,7 @@ Autobuild = {
     ModuleManager["initButtons"]("Autobuild");
   },
   /**
-   * Check if Captain is active: Set Queue length to 7.
+   * Check active advisors to set queue limits (curator for buildings, commander for units).
    */
   checkCaptain: function () {
     if ($(".advisor_frame.captain div").hasClass("captain_active")) {
@@ -171,7 +228,150 @@ Autobuild = {
     if ($(".advisor_frame.curator div").hasClass("curator_active")) {
       Autobuild.isCurator = true;
     }
+    Autobuild.isCommander =
+      $(".advisor_frame.commander div").hasClass("commander_active") ||
+      $(".advisor_frame.commander div").hasClass("active") ||
+      (Game &&
+        Game.premium_data &&
+        Game.premium_data.commander &&
+        (Game.premium_data.commander.active ||
+          Game.premium_data.commander.is_active)) ||
+      false;
     Autobuild.Queue = Autobuild.isCurator ? 7 : 2;
+    Autobuild.unitQueueMax = Autobuild.isCommander ? 7 : 2;
+  },
+  getQueueLimit: function (_queueType) {
+    if (_queueType === "building") {
+      return Autobuild.buildingQueueMax > 0
+        ? Autobuild.buildingQueueMax
+        : Autobuild.Queue;
+    }
+    return Autobuild.unitQueueMax > 0 ? Autobuild.unitQueueMax : 2;
+  },
+  getUnitQueueKind: function (_queueType) {
+    return _queueType === "ship" ? "naval" : "ground";
+  },
+  getSelectedUnitData: function (_unitOrder) {
+    var context = _unitOrder || UnitOrder;
+    if (!context) {
+      return null;
+    }
+    var fallbackId = Autobuild.getSelectedUnitIdFromDom();
+    var unitId = context["unit_id"];
+    var units = context["units"];
+    if (units && unitId && units[unitId]) {
+      return units[unitId];
+    }
+    if (units && fallbackId && units[fallbackId]) {
+      return units[fallbackId];
+    }
+    if (fallbackId) {
+      return { id: fallbackId };
+    }
+    return null;
+  },
+  getSelectedUnitIdFromDom: function () {
+    var hidden = $("#unit_order_unit_hidden");
+    if (hidden.length) {
+      var hiddenValue = hidden.val();
+      if (hiddenValue) {
+        return hiddenValue;
+      }
+    }
+    var activeTab = $("#units .unit_order_tab.unit_active");
+    if (activeTab.length) {
+      var unitId = activeTab
+        .closest(".unit_tab")
+        .find(".unit")
+        .data("unit_id");
+      if (unitId) {
+        return unitId;
+      }
+    }
+    return null;
+  },
+  getSelectedUnitCount: function () {
+    var count = 0;
+    if (UnitOrder && UnitOrder.slider && UnitOrder.slider.getValue) {
+      count = UnitOrder.slider.getValue();
+    }
+    if (!count) {
+      var inputValue = parseInt($("#unit_order_input").val(), 10);
+      count = isNaN(inputValue) ? 0 : inputValue;
+    }
+    return count;
+  },
+  getUnitQueueTypeFromDom: function () {
+    if (
+      $("#unit_order").hasClass("docks_building") ||
+      $(".ui_various_orders.docks").length
+    ) {
+      return "ship";
+    }
+    return "unit";
+  },
+  getUnitQueueCount: function (_queueType, _townId) {
+    var domCount = Autobuild.getUnitQueueCountFromDom(_queueType);
+    if (domCount !== null) {
+      return domCount;
+    }
+    var count = 0;
+    if (!MM || !MM.getModels || !MM.getModels().UnitOrder) {
+      return count;
+    }
+    var kind = Autobuild.getUnitQueueKind(_queueType);
+    $.each(MM.getModels().UnitOrder, function (_index, _element) {
+      if (
+        _element &&
+        _element.attributes &&
+        String(_element.attributes.town_id) === String(_townId) &&
+        _element.attributes.kind === kind
+      ) {
+        count += 1;
+      }
+    });
+    return count;
+  },
+  getUnitQueueCountFromDom: function (_queueType) {
+    var queueSelector =
+      _queueType === "ship"
+        ? ".ui_various_orders.docks"
+        : ".ui_various_orders.barracks";
+    var queueEl = $(queueSelector).first();
+    if (!queueEl.length) {
+      return null;
+    }
+    return queueEl
+      .find(".queued_building_order")
+      .not(".grepobot-queue-item")
+      .length;
+  },
+  isUnitQueueFull: function (_queueType, _townId) {
+    return (
+      Autobuild.getUnitQueueCount(_queueType, _townId) >=
+      Autobuild.getQueueLimit(_queueType)
+    );
+  },
+  refreshUnitQueueHeader: function (_root) {
+    var root =
+      _root ||
+      Autobuild.getBuildingWindowContent() ||
+      $(".gpwindow_content:visible");
+    var header = null;
+    if (root && root.length) {
+      header = root.find("#unit_orders_queue h4");
+    }
+    if (!header || !header.length) {
+      header = $("#unit_orders_queue h4");
+    }
+    if (header.length) {
+      var maxLabel = header.find(".js-max-order-queue-count");
+      var maxValue = parseInt(maxLabel.text(), 10);
+      if (!isNaN(maxValue) && maxValue > 0) {
+        Autobuild.unitQueueMax = maxValue;
+      }
+      maxLabel.html("&infin;");
+    }
   },
   /**
    * Check if current town can build
@@ -675,10 +875,7 @@ Autobuild = {
             }
           }
           //if there is space in the queue, start after the interval
-          var _queueLimit =
-            _type == "building" && Autobuild.buildingQueueMax > 0
-              ? Autobuild.buildingQueueMax
-              : Autobuild.Queue;
+          var _queueLimit = Autobuild.getQueueLimit(_type);
           if (_queues[_type].queue.length < _queueLimit) {
             _readyTime = +Autobuild.settings.timeinterval;
             _doNext = _type;
@@ -896,6 +1093,7 @@ Autobuild = {
         break;
       case "unit":
         $("#unit_orders_queue").addClass("active");
+        Autobuild.refreshUnitQueueHeader(_jqueryElement);
 
         if (
           Autobuild.town_queues.filter((e) => e.town_id == Game.townId).length >
@@ -911,6 +1109,7 @@ Autobuild = {
         break;
       case "ship":
         $("#unit_orders_queue").addClass("active");
+        Autobuild.refreshUnitQueueHeader(_jqueryElement);
 
         if (
           Autobuild.town_queues.filter((e) => e.town_id == Game.townId).length >
@@ -941,6 +1140,17 @@ Autobuild = {
     }
   },
   initUnitOrder: function (_selectedUnit, _type) {
+    Autobuild.refreshUnitQueueHeader(_selectedUnit["$el"]);
+    setTimeout(function () {
+      Autobuild.refreshUnitQueueHeader(_selectedUnit["$el"]);
+    }, 0);
+    if (
+      !_selectedUnit ||
+      !_selectedUnit["units"] ||
+      !_selectedUnit["unit_id"]
+    ) {
+      return;
+    }
     var unitData = _selectedUnit["units"][_selectedUnit["unit_id"]];
     var confirmButton = _selectedUnit["$el"]["find"]("#unit_order_confirm");
     var addQueueButton = _selectedUnit["$el"]["find"]("#unit_order_addqueue");
@@ -987,7 +1197,7 @@ Autobuild = {
           id: "unit_order_addqueue",
           class: "confirm",
         });
-        confirmButton["after"](addQueueButton);
+      confirmButton["after"](addQueueButton);
         addQueueButton["mousePopup"](new MousePopup("Add to reqruite queue"))[
           "on"
         ]("click", function (event) {
@@ -1006,6 +1216,40 @@ Autobuild = {
       } else {
         addQueueButton["show"]();
       }
+      confirmButton.removeAttr("onclick");
+      if (confirmButton[0]) {
+        confirmButton[0].onclick = null;
+      }
+      confirmButton.off("click.grepobotQueue");
+      confirmButton.on("click.grepobotQueue", function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+        var selectedAmount = 0;
+        if (UnitOrder && UnitOrder.slider && UnitOrder.slider.getValue) {
+          selectedAmount = UnitOrder.slider.getValue();
+        }
+        if (!selectedAmount) {
+          var inputValue = parseInt($("#unit_order_input").val(), 10);
+          selectedAmount = isNaN(inputValue) ? 0 : inputValue;
+        }
+        if (selectedAmount <= 0) {
+          return false;
+        }
+        if (Autobuild.isUnitQueueFull(_type, Game.townId)) {
+          Autobuild.addUnitQueueItem(unitData, _type, selectedAmount);
+          return false;
+        }
+        if (UnitOrder && UnitOrder.callMethod) {
+          var target = this;
+          if (typeof w === "function") {
+            UnitOrder.callMethod("build", [w(target)], true);
+          } else {
+            UnitOrder.callMethod("build", [$(target)], true);
+          }
+        }
+        return false;
+      });
       confirmButton["show"]();
       sliderEl["slider"]({
         slide: function (event, ui) {
@@ -1117,12 +1361,22 @@ Autobuild = {
    * @param {ship or unit} _type
    */
   addUnitQueueItem: function (_unit, _type) {
+    var count =
+      arguments.length > 2 && arguments[2] != undefined
+        ? arguments[2]
+        : Autobuild.getSelectedUnitCount();
+    if (!_unit || !count) {
+      return;
+    }
+    if (typeof _unit === "string") {
+      _unit = { id: _unit };
+    }
     Autobuild.saveUnits({
       action: "add",
       town_id: Game.townId,
       item_name: _unit.id,
       type: _type,
-      count: UnitOrder.slider.getValue(),
+      count: count,
     });
   },
 
@@ -1174,7 +1428,15 @@ Autobuild = {
         _alreadyAdded = true;
       }
       Autobuild.setEmptyItems($(this));
-      UnitOrder.selectUnit(UnitOrder.unit_id);
+      if (
+        UnitOrder &&
+        typeof UnitOrder.selectUnit === "function" &&
+        UnitOrder.unit_id
+      ) {
+        try {
+          UnitOrder.selectUnit(UnitOrder.unit_id);
+        } catch (err) {}
+      }
     });
 
     localStorage.setItem(
@@ -1623,8 +1885,7 @@ Autobuild = {
     building_barracks_index: function () {
       Autobuild.currentWindow = Autobuild.getBuildingWindowContent();
       if (Autobuild.currentWindow && Autobuild.currentWindow.length > 0) {
-        var _unitQueue = Autobuild.currentWindow.find("#unit_orders_queue h4");
-        _unitQueue.find(".js-max-order-queue-count").html("&infin;");
+        Autobuild.refreshUnitQueueHeader(Autobuild.currentWindow);
       }
     },
   },
