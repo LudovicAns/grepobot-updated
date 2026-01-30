@@ -1,0 +1,16 @@
+{
+  "readyState": 4,
+  "responseText": "{\"json\":{\"error\":\"L'ordre de construction choisi n'existe plus.\",\"t_token\":174063},\"_srvtime\":1769765227,\"version\":\"2.354.2\",\"update\":\"unknown\",\"language\":\"fr_FR\"}",
+  "responseJSON": {
+    "json": {
+      "error": "L'ordre de construction choisi n'existe plus.",
+      "t_token": 174063
+    },
+    "_srvtime": 1769765227,
+    "version": "2.354.2",
+    "update": "unknown",
+    "language": "fr_FR"
+  },
+  "status": 200,
+  "statusText": "success"
+}

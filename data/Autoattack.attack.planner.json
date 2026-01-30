@@ -1,0 +1,25 @@
+{
+  "menu": "{\n\"attack_planer-index\":{\"action\":\"index\",\"controller\":\"attack_planer\",\"name\":\"Plans\"},\n\"attack_planer-attacks\":{\"action\":\"attacks\",\"controller\":\"attack_planer\",\"name\":\"Attaques \"}}\n",
+  "templates": {
+    "index": "<div class=\"attack_planner attacks\">\n    <div class=\"game_inner_box\">\n        <div class=\"bar\">\n            <div class=\"rbtn_sort_attack_list radiobutton sort_options\"></div>\n        </div>\n\n        \n\t<div class=\"game_border \">\n\t\t<div class=\"game_border_top\"></div>\n\t\t<div class=\"game_border_bottom\"></div>\n\t\t<div class=\"game_border_left\"></div>\n\t\t<div class=\"game_border_right\"></div>\n\t\t<div class=\"game_border_corner corner1\"></div>\n\t\t<div class=\"game_border_corner corner2\"></div>\n\t\t<div class=\"game_border_corner corner3\"></div>\n\t\t<div class=\"game_border_corner corner4\"></div>\n\n\t        <div class=\"game_header bold\">\n            <span><%= l10n.attacks %></span>\n        </div>\n        <div class=\"attacks_list\">\n            <!-- Content goes here -->\n        </div>\n        \n\t\t</div>\n\t        <div class=\"buttons_bar\">\n            <div class=\"pgr_attacks_list pager_grepo\"></div>\n        </div>\n    </div>\n</div>\n",
+    "attacks_list": "<ul class=\"attacks_list\"><%\n\tvar i, l = attacks.length, attack, units, unit_id, even = false,\n\t\tstart = Math.max(0, activepagenr * per_page),\n\t\toffset = Math.min(l, start + per_page);\n\n\tif (l > 0) {\n\t\tfor (i = start; i < offset; i++) {\n\t\t\tattack = attacks[i];\n\t\t\tunits = attack.units_converted;\n\t\t\t%>\n\t\t\t<li class=\"<%= even ? 'even' : 'odd' %> attacks_row attacks_row_<%= attack.id %> <%= attack_id === attack.id ? 'selected' : '' %>\" data-attackid=\"<%= attack.id %>\" data-planid=\"<%= attack.plan_id %>\">\n\t\t\t\t<div class=\"attack_type32x32 <%= attack.type %>\"></div>\n\t\t\t\t<div class=\"arrow\"></div>\n\n\t\t\t\t<% if (attack.can_edit) { %>\n\t\t\t\t\t<div class=\"row1\"><strong><%= l10n.plan %></strong> <span class=\"plan_name\"><%= attack.plan_name %></span></div>\n\t\t\t\t<% } %>\n\t\t\t\t<div class=\"row2\">\n\t\t\t\t\t<%= attack.origin_town_link %> (<%= attack.origin_player_link %>) <%= attack.origin_alliance_id ? '(<a class=\"gp_alliance_link\" data-allyid=\"' + attack.origin_alliance_id + '\" data-allyname=\"' + attack.origin_alliance_name + '\">' + attack.origin_alliance_name + '</a>)' : '' %>\n\t\t\t\t\t<span class=\"small_arrow\"></span>\n\t\t\t\t\t<%= attack.target_town_link %>\n\n\t\t\t\t\t<% if (attack.target_player_id) { %>\n\t\t\t\t\t\t<span>(<%= attack.target_player_link %>)</span>\n\t\t\t\t\t<% } %>\n\n\t\t\t\t\t<% if (attack.target_alliance_id) { %>\n\t\t\t\t\t\t<span>(<%= attack.target_alliance_name %>)</span>\n\t\t\t\t\t<% } %>\n\n\t\t\t\t\t<% if (attack.target_is_temple) { %>\n\t\t\t\t\t\t<span>(<%= l10n.temple + ' ID: ' + attack.target_town_id %>)</span>\n\t\t\t\t\t<% } else if (!attack.target_player_id) { %>\n\t\t\t\t\t\t<span>(<%= l10n.ghost_town + ' ID: ' + attack.target_town_id %>)</span>\n\t\t\t\t\t<% } %>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"row3\">\n\t\t\t\t\t<span><%= l10n.sent_at %></span> <%= DateHelper.formatDateTimeNice(attack.send_at, true) %> <span><%= l10n.arrive_at %></span> <%= DateHelper.formatDateTimeNice(attack.arrival_at, true) %>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"show_units\"></div>\n\t\t\t\t<div class=\"origin_town_units\"><%\n\t\t\t\t\tfor (unit_id in units) {\n\t\t\t\t\t\tif (units.hasOwnProperty(unit_id) && units[unit_id] !== 0) { %>\n\t\t\t\t\t\t\t<div class=\"unit_icon25x25 <%= unit_id %>\"><%= units[unit_id] %></div>\n\t\t\t\t\t\t<% }\n\t\t\t\t\t}\n\t\t\t\t%></div>\n\n\t\t\t\t<% if (attack.can_edit) { %>\n\t\t\t\t\t<div class=\"edit_icon\"></div>\n\t\t\t\t<% } %>\n\t\t\t\t<div class=\"attack_icon\"></div>\n\t\t\t</li>\n\t\t<%\n\t\teven = !even;\n\t\t}\n\t}\n\telse { %>\n\t\t<li class=\"no_results_found\"><%= l10n.no_results_found %></li>\n\t<% }\n%></ul>\n"
+  },
+  "data": {
+    "attacks": [],
+    "attack_id": 0
+  },
+  "l10n": {
+    "attacks": "Attaques ",
+    "no_results_found": "Aucune attaque en cours.",
+    "plan": "Plan :",
+    "ghost_town": "Ville fantôme",
+    "sent_at": "Départ :",
+    "arrive_at": "Arrivée :",
+    "show_all_units": "Afficher toutes les unités",
+    "order_by_sent_at": "Classer par départ",
+    "order_by_arrival_at": "Classer par arrivée",
+    "order_by_town_name": "Classer par nom de ville",
+    "temple": "Temple"
+  },
+  "t_token": 174063
+}
