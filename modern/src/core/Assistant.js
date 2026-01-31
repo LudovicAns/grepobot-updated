@@ -1,0 +1,177 @@
+/**
+ * Assistant module: toggles map overlays and persists simple settings.
+ * Responsibilities: load/save settings and toggle map CSS classes.
+ */
+window.Assistant = {
+  settings: {
+    town_names: false,
+    player_name: false,
+    alliance_name: true,
+    auto_relogin: 0,
+  },
+  init: function () {
+    ConsoleLog.Log(
+      GrepoBotCore.t("console.init.assistant", "Initialize Assistant"),
+      0,
+    );
+    Assistant.loadSettings();
+    Assistant.initSettings();
+  },
+  setSettings: function (settingsJson) {
+    if (settingsJson != "" && settingsJson != null) {
+      $["extend"](Assistant["settings"], JSON["parse"](settingsJson));
+    }
+    Assistant.saveSettings();
+    Assistant["initSettings"]();
+  },
+  loadSettings: function () {
+    var storedSettings = localStorage.getItem("Assistant.Settings");
+    if (storedSettings) {
+      $.extend(Assistant.settings, JSON.parse(storedSettings));
+    }
+  },
+  saveSettings: function () {
+    localStorage.setItem(
+      "Assistant.Settings",
+      JSON.stringify(Assistant.settings),
+    );
+  },
+  initSettings: function () {
+    // Toggle map overlays based on current settings.
+    if (Assistant["settings"]["town_names"]) {
+      $("#map_towns .flag")["addClass"]("active_town");
+    } else {
+      $("#map_towns .flag")["removeClass"]("active_town");
+    }
+    if (Assistant["settings"]["player_name"]) {
+      $("#map_towns .flag")["addClass"]("active_player");
+    } else {
+      $("#map_towns .flag")["removeClass"]("active_player");
+    }
+    if (Assistant["settings"]["alliance_name"]) {
+      $("#map_towns .flag")["addClass"]("active_alliance");
+    } else {
+      $("#map_towns .flag")["removeClass"]("active_alliance");
+    }
+  },
+  contentSettings: function () {
+    return $("<fieldset/>", {
+      "\x69\x64": "Assistant_settings",
+      "\x73\x74\x79\x6C\x65":
+        "float:left; width:calc(100% - 10px); height: 270px; box-sizing:border-box;",
+    })
+      ["append"](
+        $("<legend/>")["html"](
+          GrepoBotCore.t("assistant.title", "Assistant Settings"),
+        ),
+      )
+      ["append"](
+        FormBuilder["checkbox"]({
+          "\x74\x65\x78\x74": GrepoBotCore.t(
+            "assistant.show_town_names",
+            "Show town names on island view.",
+          ),
+          "\x69\x64": "assistant_town_names",
+          "\x6E\x61\x6D\x65": "assistant_town_names",
+          "\x63\x68\x65\x63\x6B\x65\x64": Assistant["settings"]["town_names"],
+        }),
+      )
+      ["append"](
+        FormBuilder["checkbox"]({
+          "\x74\x65\x78\x74": GrepoBotCore.t(
+            "assistant.show_player_names",
+            "Show player names on island view.",
+          ),
+          "\x69\x64": "assistant_player_names",
+          "\x6E\x61\x6D\x65": "assistant_player_names",
+          "\x63\x68\x65\x63\x6B\x65\x64": Assistant["settings"]["player_name"],
+        }),
+      )
+      ["append"](
+        FormBuilder["checkbox"]({
+          "\x74\x65\x78\x74": GrepoBotCore.t(
+            "assistant.show_alliance_names",
+            "Show alliance names on island view.",
+          ),
+          "\x69\x64": "assistant_alliance_names",
+          "\x6E\x61\x6D\x65": "assistant_alliance_names",
+          "\x63\x68\x65\x63\x6B\x65\x64":
+            Assistant["settings"]["alliance_name"],
+        }),
+      )
+      ["append"](
+        FormBuilder["selectBox"]({
+          id: "assistant_auto_relogin",
+          name: "assistant_auto_relogin",
+          label: GrepoBotCore.t(
+            "assistant.auto_relogin",
+            "Auto re-login: ",
+          ),
+          styles: "width: 120px;",
+          value: Assistant["settings"]["auto_relogin"],
+          options: [
+            {
+              value: "0",
+              name: GrepoBotCore.t(
+                "assistant.auto_relogin.disabled",
+                "Disabled",
+              ),
+            },
+            {
+              value: "120",
+              name: GrepoBotCore.t(
+                "assistant.auto_relogin.after_2",
+                "After 2 minutes",
+              ),
+            },
+            {
+              value: "300",
+              name: GrepoBotCore.t(
+                "assistant.auto_relogin.after_5",
+                "After 5 minutes",
+              ),
+            },
+            {
+              value: "600",
+              name: GrepoBotCore.t(
+                "assistant.auto_relogin.after_10",
+                "After 10 minutes",
+              ),
+            },
+            {
+              value: "900",
+              name: GrepoBotCore.t(
+                "assistant.auto_relogin.after_15",
+                "After 15 minutes",
+              ),
+            },
+          ],
+        }),
+      )
+      ["append"](
+        FormBuilder["button"]({
+          name: DM["getl10n"]("notes")["btn_save"],
+          style: "top: 120px;",
+        })["on"]("click", function () {
+          var formData = $("#Assistant_settings")["serializeObject"]();
+          Assistant["settings"]["town_names"] =
+            formData["assistant_town_names"] != undefined;
+          Assistant["settings"]["player_name"] =
+            formData["assistant_player_names"] != undefined;
+          Assistant["settings"]["alliance_name"] =
+            formData["assistant_alliance_names"] != undefined;
+          Assistant["settings"]["auto_relogin"] = parseInt(
+            formData["assistant_auto_relogin"],
+          );
+          Assistant.saveSettings();
+          HumanMessage.success(
+            GrepoBotCore.t(
+              "ui.settings_saved",
+              "The settings were saved!",
+            ),
+          );
+          Assistant.initSettings();
+        }),
+      );
+  },
+};

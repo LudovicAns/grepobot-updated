@@ -17,7 +17,7 @@ const SheetPortal = SheetPrimitive.Portal
 const SheetOverlay = React.forwardRef(({ className, ...props }, ref) => (
   <SheetPrimitive.Overlay
     className={cn(
-      "gb:fixed gb:inset-0 gb:z-50 gb:bg-black/80 gb: gb:data-[state=open]:animate-in gb:data-[state=closed]:animate-out gb:data-[state=closed]:fade-out-0 gb:data-[state=open]:fade-in-0",
+      "gb:fixed gb:inset-0 gb:z-[100001] gb:bg-black/80 gb: gb:data-[state=open]:animate-in gb:data-[state=closed]:animate-out gb:data-[state=closed]:fade-out-0 gb:data-[state=open]:fade-in-0",
       className
     )}
     {...props}
@@ -26,7 +26,7 @@ const SheetOverlay = React.forwardRef(({ className, ...props }, ref) => (
 SheetOverlay.displayName = SheetPrimitive.Overlay.displayName
 
 const sheetVariants = cva(
-  "gb:fixed gb:z-50 gb:gap-4 gb:bg-background gb:p-6 gb:shadow-lg gb:transition gb:ease-in-out gb:data-[state=closed]:duration-300 gb:data-[state=open]:duration-500 gb:data-[state=open]:animate-in gb:data-[state=closed]:animate-out",
+  "gb:fixed gb:z-[100001] gb:gap-4 gb:bg-background gb:p-6 gb:shadow-lg gb:transition gb:ease-in-out gb:data-[state=closed]:duration-300 gb:data-[state=open]:duration-500 gb:data-[state=open]:animate-in gb:data-[state=closed]:animate-out",
   {
     variants: {
       side: {
