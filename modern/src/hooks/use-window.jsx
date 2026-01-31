@@ -84,6 +84,14 @@ export function WindowProvider({ children }) {
     };
   };
 
+  const closeApp = () => {
+    const target = document.getElementById("grepobot-modern-root");
+    if (target) {
+      target.classList.add("gb:hidden");
+      target.classList.remove("gb:block");
+    }
+  };
+
   useEffect(() => {
     if (!isDragging) return;
 
@@ -112,6 +120,7 @@ export function WindowProvider({ children }) {
       position, 
       size, 
       onMouseDown, 
+      closeApp,
       containerRef,
       isDragging 
     }}>

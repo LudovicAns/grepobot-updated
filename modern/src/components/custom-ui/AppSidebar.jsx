@@ -21,6 +21,8 @@ import {Queues} from "@/components/pages/Queues";
 import {Attaques} from "@/components/pages/Attaques";
 import {Assistant} from "@/components/pages/Assistant";
 import {Console} from "@/components/pages/Console";
+import {TypographyH4} from "@/components/custom-ui/TypographyH4";
+import {TypographyH2} from "@/components/custom-ui/TypographyH2";
 
 export const items = [
   {
@@ -73,8 +75,8 @@ export function AppSidebar() {
   return (
     <Sidebar>
       <SidebarHeader onMouseDown={onMouseDown} className="gb:cursor-move gb:select-none">
-        <TypographyH1 className={"gb:-mb-1"}>GrepoBot Modern</TypographyH1>
-        <TypographyP className={"gb:mt-1"}>Version 0.0.1</TypographyP>
+        <TypographyH2 className={"gb:-mb-1"}>GrepoBot Modern</TypographyH2>
+        Version 0.0.1
       </SidebarHeader>
       <SidebarContent>
         {items.map(({label, icon}, index) => (
