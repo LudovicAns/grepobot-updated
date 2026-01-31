@@ -18,7 +18,7 @@ function AppContent() {
         width: size ? `${size.width}px` : undefined,
         height: size ? `${size.height}px` : undefined,
       }}
-      className="gb:absolute gb:min-w-[400px] gb:min-h-[100px] gb:rounded-[14px] gb:shadow-[0_12px_35px_rgba(0,0,0,0.25)] gb:backdrop-blur-[8px] gb:resize gb:overflow-auto gb:bg-background/80 gb:border gb:border-border"
+      className="gb:absolute gb:min-w-[688px] gb:min-h-[480px] gb:rounded-[14px] gb:shadow-[0_12px_35px_rgba(0,0,0,0.25)] gb:backdrop-blur-[8px] gb:resize gb:overflow-auto gb:bg-background/80 gb:border gb:border-border"
     >
       <DefaultLayout>
         <div className="gb:flex gb:flex-col gb:gap-4">
